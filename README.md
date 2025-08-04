@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AutoMata ⚙️ – The Visual AI SaaS Workflow Builder
 
-## Getting Started
+**AutoMata** is an extensible, full-stack **AI-powered B2C SaaS platform** for building automation workflows across services like **Google Drive**, **Slack**, **Discord**, and **Notion** — using a **drag-and-drop node editor**. We manually implemented each integration with raw APIs — no third-party wrappers or Zapier-like tools.
 
-First, run the development server:
+> ⚠️ Built completely from scratch. OAuth, webhooks, API calls – all hand-coded. No SDKs, no shortcuts.
+
+---
+
+## 🚀 What AutoMata Does
+
+- 🧠 Design **AI-assisted** automation flows on an **infinite canvas**
+- 🤝 Connect Google Drive, Slack, Discord, Notion accounts
+- 📦 Send messages, create database entries, and monitor file activity
+- 🎯 Chain triggers and actions into **node-based workflows**
+- 💳 Credit-based billing via **Stripe subscriptions**
+- 🔄 Save, test, and publish flows using a clean UI
+- ⚡ Fully functioning SaaS app — from landing page to billing and automation engine
+
+---
+
+## ✨ Features
+
+- 🤯 **B2C SaaS** with authentication, credit system, and subscriptions
+- 🌐 **Google Drive** integration with change detection listener
+- 💬 **Slack & Discord**: send messages via bot/token/webhook
+- 🧾 **Notion API**: dynamically create content entries
+- 🛠️ **Custom OAuth** + access token storage (no libraries used)
+- 🛒 **Stripe Billing** with credit deduction logic
+- 📊 **Visual Flow Editor** with drag-and-drop nodes
+- 🎨 Built with [shadcn/ui](https://ui.shadcn.dev) + [Aceternity UI](https://ui.aceternity.com/)
+- 🗺️ Mini map, zoom, and infinite canvas
+- 🌘 Light/Dark mode with theme persistence
+- 🧪 Test workflows directly from the editor
+- 🧩 Save local templates per service
+- 🏁 Publish workflows for live automation
+
+---
+
+## 🧰 Tech Stack
+
+- **Frontend:** Next.js 14 App Router, TypeScript, Tailwind CSS, shadcn UI, Aceternity UI, XYFlow
+- **Backend:** Prisma ORM, PostgreSQL, Next.js Server Actions, Stripe
+- **APIs Built:** Google Drive (watchers + files), Discord (webhooks), Slack (bot + messages), Notion (databases)
+
+---
+
+## 🔧 How I Built It
+
+I manually set up each integration from scratch using official APIs and SDKs:
+
+- ✅ Custom **OAuth** flows for Google, Slack, Notion, and Discord
+- ✅ Manual **webhook setup** for Google Drive activity
+- ✅ Used official SDKs: `@googleapis`, `@notionhq/client`, `@slack/web-api`
+- ✅ Built the full **workflow engine** with Node connections, credit-based billing, and publish system using Prisma and Server Actions
+
+
+---
+
+## 🧪 Getting Started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<hr>
+Visit: http://localhost:3000
+<br />
+<hr>
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+📈 Future Roadmap
+🧠 AI node suggestions using OpenAI
+👥 Team-based workflows
+🔐 OAuth token refresh cycle
+📡 Webhook delivery logging
+📦 Templates library with import/export
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+📄 License
+MIT License
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built with ❤️ by Aaryan Bairagi — this is how real SaaS automation platforms are built, no abstractions, just raw engineering.
