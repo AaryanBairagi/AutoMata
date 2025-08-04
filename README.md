@@ -64,11 +64,11 @@ npm run dev
 Visit: http://localhost:3000
 ---
 ## 📈 Future Roadmap
--🧠 AI node suggestions using OpenAI
--👥 Team-based workflows
--🔐 OAuth token refresh cycle
--📡 Webhook delivery logging
--📦 Templates library with import/export
+- 🧠 AI node suggestions using OpenAI
+- 👥 Team-based workflows
+- 🔐 OAuth token refresh cycle
+- 📡 Webhook delivery logging
+- 📦 Templates library with import/export
 
 ---
 
