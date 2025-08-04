@@ -1,7 +1,6 @@
 # AutoMata ⚙️ – The Visual AI SaaS Workflow Builder
 
-**AutoMata** is an extensible, full-stack **AI-powered B2C SaaS platform** for building automation workflows across services like **Google Drive**, **Slack**, **Discord**, and **Notion** — using a **drag-and-drop node editor**. We manually implemented each integration with raw APIs — no third-party wrappers or Zapier-like tools.
-
+**AutoMata** is an extensible, full-stack **AI-powered B2C SaaS platform** for building automation workflows across services like **Google Drive**, **Slack**, **Discord**, and **Notion** — using a **drag-and-drop node editor**. We manually set up each connection using official SDKs, avoiding no-code tools like Zapier or Make.
 
 ---
 
@@ -60,6 +59,22 @@ I manually set up each integration from scratch using official APIs and SDKs:
 ```bash
 npm install
 npm run dev
+```
+---
+Visit: http://localhost:3000
+---
+## 📈 Future Roadmap
+-🧠 AI node suggestions using OpenAI
+-👥 Team-based workflows
+-🔐 OAuth token refresh cycle
+-📡 Webhook delivery logging
+-📦 Templates library with import/export
 
 ---
+
+## 📄 License
+MIT License
+
+---
+Built with ❤️ by Aaryan Bairagi — this is how real SaaS automation platforms are built, no abstractions, just raw engineering.
 
