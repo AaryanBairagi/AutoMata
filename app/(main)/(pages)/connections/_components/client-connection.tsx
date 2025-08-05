@@ -40,6 +40,27 @@ const ClientConnections = ({ searchParams, userId }: Props) => {
             team_name = "",
         } = searchParams;
 
+        console.log( 
+            {"webhook_id" : webhook_id,
+            "webhook_name" : webhook_name,
+            "webhook_url" : webhook_url,
+            "guild_id" : guild_id,
+            "guild_name" : guild_name ,
+            "channel_id" : channel_id ,
+            "access_token" : access_token,
+            "workspace_name" : workspace_name,
+            "workspace_icon" : workspace_icon,
+            "workspace_id" : workspace_id,
+            "database_id " : database_id,
+            "app_id" : app_id ,
+            "authed_user_id" : authed_user_id,
+            "authed_user_token" : authed_user_token,
+            "slack_access_token" : slack_access_token,
+            "bot_user_id" : bot_user_id,
+            "team_id" : team_id,
+            "team_name" : team_name
+        });
+
         await onDiscordConnect(channel_id, webhook_id, webhook_name, webhook_url, userId, guild_name, guild_id);
         await onNotionConnect(access_token, workspace_id, workspace_icon, workspace_name, database_id, userId);
         await onSlackConnect(app_id, authed_user_id, authed_user_token, slack_access_token, bot_user_id, team_id, team_name, userId);

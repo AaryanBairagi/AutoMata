@@ -48,9 +48,9 @@ const EditorCanvasCardSingle = ({data}:{data: EditorCanvasCardType}) => {
                     {'bg-green-500':Math.random() <0.6 , 
                     'bg-orange-500':Math.random() >=0.6 && Math.random() < 0.8 , 
                     'bg-red-500': Math.random() >=0.8 } )}>
-
                 </div>
             </Card>
+            <CustomHandle type="source" position={Position.Bottom} style={{ zIndex: 100 }} id="a" />
     </>
     )
 }

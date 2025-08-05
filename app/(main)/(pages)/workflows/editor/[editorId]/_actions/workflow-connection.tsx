@@ -6,7 +6,7 @@ export const onCreateNodesEdges = async (
   flowId: string,
   nodes: string,
   edges: string,
-  flowPath: string
+  flowPath: string[]
 ) => {
   const existingFlow = await db.workflows.findUnique({
     where: { id: flowId },

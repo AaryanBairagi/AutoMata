@@ -17,11 +17,13 @@ const GoogleDriveFiles = (props: Props) => {
         setLoading(true)
         const response = await axios.get('/api/drive-activity')
         if (response) {
-        toast.message(response.data)
-        setLoading(false)
-        setIsListening(true)
+            toast.message(response.data)
+            setLoading(false)
+            setIsListening(true)
         }
-        setIsListening(false)
+        else {
+            setIsListening(false)
+        }
     }
 
     const onListener = async () => {
@@ -44,7 +46,12 @@ return (
             </CardContainer>
         </Card>
         ) : (
-        <Button variant="outline"
+        <Button variant="outline" 
+            className={`relative overflow-hidden px-6 py-3 font-medium text-white transition-all duration-300 
+                rounded-lg shadow-md bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 
+                hover:from-blue-600 hover:via-indigo-600 hover:to-purple-600
+                focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50`}
+
             {...(!loading && {
                 onClick: reqGoogle,
             })} >
@@ -65,7 +72,7 @@ return (
                 </svg>
             </div>
             ) : (
-                'Create Listener'
+                <span className="z-10">Create Listener 🚀</span>
             )}
         </Button>
         )}

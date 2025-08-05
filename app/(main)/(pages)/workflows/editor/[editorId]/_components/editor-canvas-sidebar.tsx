@@ -42,7 +42,7 @@ const EditorCanvasSidebar = ({ nodes }: Props) => {
     }, [nodeConnection])
 
 return (
-    <aside>
+    <aside className='border-1 border-white'>
         <Tabs defaultValue="actions" className="h-full max-h-screen overflow-y-scroll pb-24">
             <TabsList className="bg-transparent">
                 <TabsTrigger value="actions">Actions</TabsTrigger>
@@ -78,7 +78,7 @@ return (
 
             <Accordion type="multiple">
                 <AccordionItem value="Options" className="border-y-[1px] px-2">
-                    <AccordionTrigger className="!no-underline">
+                    <AccordionTrigger className="!no-underline text-yellow-300">
                         Account
                     </AccordionTrigger>
                     <AccordionContent>
@@ -89,7 +89,7 @@ return (
                 </AccordionItem>
 
                 <AccordionItem value="Expected Output" className="px-2">
-                    <AccordionTrigger className="!no-underline">
+                    <AccordionTrigger className="!no-underline text-yellow-300">
                         Action
                     </AccordionTrigger>
                     <RenderOutputAccordion state={state} nodeConnection={nodeConnection}/>

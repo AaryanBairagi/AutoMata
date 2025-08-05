@@ -47,19 +47,43 @@ const ContentBasedOnTitle = ({
         const { selectedNode } = newState.editor
         const title = selectedNode.data.title
 
-        useEffect(() => {
-            const reqGoogle = async () => {
-            const response: { data: { message: { files: any } } } = await axios.get('/api/drive')
-        if (response) {
-        console.log(response.data.message.files[0])
-        toast.message("Fetched File")
-        setFile(response.data.message.files[0])
-        } else {
-        toast.error('Something went wrong')
+//         useEffect(() => {
+//             const reqGoogle = async () => {
+//             const response: { data: { message: { files: any } } } = await axios.get('/api/drive')
+//             if (response) {
+//                 console.log(response.data.message.files[0])
+//                 toast.message("Fetched File")
+//                 setFile(response.data.message.files[0])
+//             } 
+//             else {
+//                 toast.error('Something went wrong')
+//             }
+//     }
+//     reqGoogle()
+// }, [])
+
+
+useEffect(() => {
+    const reqGoogle = async () => {
+        try {
+            const response = await axios.get('/api/drive')
+            const files = response?.data?.message?.files
+            if (Array.isArray(files) && files.length > 0) {
+                console.log(files[0])
+                toast.message("Fetched File")
+                setFile(files[0])
+            } else {
+                toast.error("No files found")
+            }
+        } catch (error) {
+            console.error("Error fetching from /api/drive", error)
+            toast.error("Something went wrong")
         }
     }
+
     reqGoogle()
 }, [])
+
 
     // @ts-ignore
     const nodeConnectionType: any = nodeConnection[nodeMapper[title]]
