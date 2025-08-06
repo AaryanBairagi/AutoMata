@@ -15,7 +15,7 @@ const SideBar = () => {
     const pathname = usePathname();
 
     return (
-        <nav className='flex flex-col items-center justify-between gap-10 py-6 px-2 w-24 min-h-screen flex-shrink-0 bg-background border-r-2 border-b-2 border-border'>
+        <nav className='flex flex-col border items-center justify-between gap-10 py-6 px-2 w-24 min-h-screen flex-shrink-0 bg-background border-muted-foreground/20'>
             <div className="flex flex-col items-center gap-8 overflow-y-auto hide-scrollbar">
             <Link href="/" className="font-bold text-white text-lg tracking-tight">automata.</Link>
 

@@ -90,8 +90,10 @@ const ProfileForm = ({ user, onUpdate }: Props) => {
         />
         <Button
           type="submit"
-          className="self-start hover:bg-[#2F006B] hover:text-white "
-        >
+          className={`relative overflow-hidden w-[160px] border-1 border-black text-center px-6 py-3 font-medium text-white transition-all duration-300 
+              rounded-lg shadow-md bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 
+              hover:from-blue-600 hover:via-indigo-600 hover:to-purple-600
+              focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50`} >
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

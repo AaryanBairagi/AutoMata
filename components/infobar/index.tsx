@@ -10,7 +10,7 @@ type Props = {}
 const InfoBar = async (props: Props) => {
     const user = await currentUser()
 return (
-    <div className="flex flex-row justify-end px-4 py-4 w-full items-center gap-6 dark:bg-black">
+    <div className="flex flex-row justify-end px-4 py-4 w-full border-t border-r border-muted-foreground/20 items-center gap-6 dark:bg-black">
         <span className='flex items-center bg-muted px-4 rounded-full'>
             <Search />
             <Input placeholder="Quick Search" className="border-none" />

@@ -91,17 +91,18 @@ export const onCreateNewPageInDatabase = async (
             database_id: databaseId,
         },
         properties: {
-            name: [ 
-                // title: [
+            name: {
+                title: [
                 {
-                text: {
-                        content: content,
+                    text: {
+                    content: content || 'Testing',
                     },
                 },
-                ],
-            },
+            ],
         },
-    )
+    },
+    });
+
     if (response) {
         return response
     }
