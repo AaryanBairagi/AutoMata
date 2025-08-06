@@ -9,7 +9,7 @@ export default function DashboardPage() {
       <h1 className='text-4xl p-6 flex items-center border-b bg-background'>
         DASHBOARD
       </h1>
-      <div className="mt-4">
+      <div className="mt-0">
         <Settings />
       </div>
     </div>

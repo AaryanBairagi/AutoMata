@@ -50,6 +50,8 @@ export const onNotionConnect = async (
     }
     }
 }
+
+
 export const getNotionConnection = async () => {
     const user = await currentUser()
     if (user) {
@@ -64,6 +66,8 @@ export const getNotionConnection = async () => {
     }
 }
 
+
+
 export const getNotionDatabase = async (
     databaseId: string,
     accessToken: string
@@ -75,6 +79,8 @@ export const getNotionDatabase = async (
     return response
 }
 
+
+
 export const onCreateNewPageInDatabase = async (
     databaseId: string,
     accessToken: string,
@@ -82,28 +88,40 @@ export const onCreateNewPageInDatabase = async (
 ) => {
     const notion = new Client({
         auth: accessToken,
-    })
-
-    console.log(databaseId)
-    const response = await notion.pages.create({
-        parent: {
-            type: 'database_id',
-            database_id: databaseId,
-        },
-        properties: {
-            name: {
-                title: [
-                {
-                    text: {
-                    content: content || 'Testing',
-                    },
-                },
-            ],
-        },
-    },
     });
 
-    if (response) {
-        return response
+    const trimmedDbId = databaseId.trim();
+
+    try {
+        // Optional: print database schema once for debug
+        const dbData = await notion.databases.retrieve({
+            database_id: trimmedDbId,
+        });
+        console.log("📄 Notion Database Schema:", JSON.stringify(dbData, null, 2));
+
+        // Now create the page
+        const response = await notion.pages.create({
+            parent: {
+                type: 'database_id',
+                database_id: trimmedDbId,
+            },
+            properties: {
+                Name: {
+                    title: [
+                        {
+                            text: {
+                                content: typeof content === 'string' && content.trim() !== '' ? content : 'Untitled',
+                            },
+                        },
+                    ],
+                },
+            },
+        });
+
+        console.log("✅ Page created successfully:", response);
+        return response;
+    } catch (error) {
+        console.error("❌ Error creating page in Notion DB:", error);
+        throw error;
     }
-}
+};
