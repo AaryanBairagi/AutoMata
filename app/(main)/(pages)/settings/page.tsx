@@ -22,7 +22,7 @@ export default function SettingsClient() {
     return (
         <div className="flex flex-col gap-4">
             <h1 className="z-[10] flex items-center justify-between border-b bg-background p-6 text-4xl">
-            <span>Settings</span>
+            <span>SETTINGS</span>
             </h1>
 
             <div className="flex flex-col gap-10 p-6">

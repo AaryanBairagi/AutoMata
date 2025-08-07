@@ -40,7 +40,7 @@ const GoogleDriveFiles = (props: Props) => {
 return (
     <div className="flex flex-col gap-3 pb-6">
         {isListening ? (
-        <Card className="py-3">
+        <Card className="relative w-full max-w-md rounded-2xl border border-white/10 bg-gradient-to-br from-[#1d1e20] to-[#111113] p-6 shadow-xl transition-all duration-300 hover:shadow-2xl">
             <CardContainer>
                 <CardDescription>Listening...</CardDescription>
             </CardContainer>

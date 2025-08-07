@@ -8,7 +8,7 @@ const Page = (props: Props) => {
 return (
     <div className='flex flex-col gap-4 relative'>
         <h1 className='text-4xl p-6 flex items-center border-2 border-white/60 rounded-lg bg-background/50 backdrop-blur-lg'>
-            Workflows
+            WORKFLOWS
             <WorkflowButton />
         </h1>
         <WorkFlows />

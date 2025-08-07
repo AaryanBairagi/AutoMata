@@ -13,8 +13,9 @@ import { v4 } from 'uuid'
 import { EditorCanvasDefaultCardTypes } from '@/lib/constant'
 import FlowInstance from './flow-instance'
 import EditorCanvasSidebar from './editor-canvas-sidebar'
-import { getWorkflowById, onCreateNodesEdges } from '../_actions/workflow-connection'
+import { getWorkflowById } from '../_actions/workflow-connection'
 import { BackgroundVariant } from '@xyflow/react'
+import { onGetNodesEdges } from '../../../_actions/workflow-connections'
 
 const initialNodes: EditorNodeTypes[] = []
 const initialEdges: Edge[] = []
@@ -124,10 +125,11 @@ const EditorCanvas = () => {
     setIsWorkFlowLoading(true);
     const flowId = pathname.split('/').pop()! ;
     // const response = await onCreateNodesEdges(flowId , JSON.stringify(nodes), JSON.stringify(edges), pathname);
-      const response = await getWorkflowById(flowId); 
+    
+    const response = await onGetNodesEdges(flowId)
     if (response) {
-      setEdges(JSON.parse(response.edges || '[]'))
-      setNodes(JSON.parse(response.nodes || '[]'))
+      setEdges(JSON.parse(response.edges!))
+      setNodes(JSON.parse(response.nodes!))
     }
     setIsWorkFlowLoading(false)
   }

@@ -162,7 +162,7 @@ export default function Home() {
               <span>AI Automation Platform · v1.0 · © {new Date().getFullYear()}</span>
     
               <a
-              href="https://github.com/your-username/your-repo"
+              href="https://github.com/AaryanBairagi/AutoMata"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1 underline hover:text-white transition-colors">

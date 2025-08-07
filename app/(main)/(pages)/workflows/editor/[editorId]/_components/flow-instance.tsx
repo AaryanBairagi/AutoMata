@@ -14,7 +14,7 @@ type Props = {
 
 const FlowInstance = ({ children, edges, nodes }: Props) => {
     const pathname = usePathname()
-    const [isFlow, setIsFlow] = useState([])
+    const [isFlow, setIsFlow] = useState<string[]>([])
     const { nodeConnection } = useNodeConnections()
 
     const onFlowAutomation = useCallback(async () => {
@@ -22,7 +22,7 @@ const FlowInstance = ({ children, edges, nodes }: Props) => {
         pathname.split('/').pop()!,
         JSON.stringify(nodes),
         JSON.stringify(edges),
-        JSON.stringify(isFlow)
+        isFlow
     )
 
     if (flow) toast.message(flow.message)

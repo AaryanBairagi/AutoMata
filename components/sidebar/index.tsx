@@ -17,7 +17,9 @@ const SideBar = () => {
     return (
         <nav className='flex flex-col border items-center justify-between gap-10 py-6 px-2 w-24 min-h-screen flex-shrink-0 bg-background border-muted-foreground/20'>
             <div className="flex flex-col items-center gap-8 overflow-y-auto hide-scrollbar">
-            <Link href="/" className="font-bold text-white text-lg tracking-tight">automata.</Link>
+            <Link href="/" className="font-bold text-white text-lg tracking-tight hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition duration-300">
+                automata.
+            </Link>
 
             <ul className="flex flex-col items-center gap-6">
             <TooltipProvider>
@@ -55,7 +57,7 @@ const SideBar = () => {
                 <div key={i} className="relative p-2 rounded-full border border-black/10 dark:border-t-2 dark:border-t-[#353346]
                     hover:bg-[#EEE0FF] dark:hover:bg-[#2e006bfa] hover:text-black dark:hover:text-white
                     transition-all duration-200" >
-                    <Icon size={18} className="text-white dark:text-white transtion-colors" />
+                    <Icon size={20} className="text-white dark:text-white transtion-colors" />
                     {i !== 2 && (
                     <div className="absolute left-1/2 h-6 border-l-2 border-muted-foreground/50 transform -translate-x-1/2 -bottom-[30px]" />
                     )}
