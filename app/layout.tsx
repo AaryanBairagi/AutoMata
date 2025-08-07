@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/providers/themes-provider";
 import { ClerkProvider } from '@clerk/nextjs';
 import ModalProvider from "@/providers/modal-provider";
 import { Toaster } from "@/components/ui/sonner"
+import { BillingProvider } from "@/providers/billing-provider";
 
 
 const fonts = DM_Sans({
@@ -27,10 +28,17 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${fonts.variable} antialiased`} >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange >
-            <ModalProvider>
+            <BillingProvider>
+              <ModalProvider>
+                {children}
+                <Toaster />
+              </ModalProvider>
+            </BillingProvider>
+            
+            {/* <ModalProvider>
               {children}
               <Toaster />
-            </ModalProvider>
+            </ModalProvider> */}
           </ThemeProvider>
         </body>
       </html>

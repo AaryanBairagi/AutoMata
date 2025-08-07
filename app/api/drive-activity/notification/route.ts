@@ -25,7 +25,7 @@ export async function POST(req:NextRequest){
             select: {clerkId : true , credits : true }
         })
 
-        if(( user && parseInt(user.credits!) > 0 ) || user?.credits=='Unlimited'){
+        if(( user && parseInt(user.credits!) > 0 ) || user?.credits=='Enterprise'){
             const workflow = await db.workflows.findMany({
                 where: {
                     userId: user.clerkId

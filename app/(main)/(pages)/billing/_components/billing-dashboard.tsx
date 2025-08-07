@@ -42,7 +42,7 @@ const BillingDashboard = (props: Props) => {
 
 return (
     <>
-    {/* {loading ? (
+    {loading ? (
         <div className="absolute flex h-full w-full items-center justify-center">
         <svg
             aria-hidden="true"
@@ -61,14 +61,14 @@ return (
             />
         </svg>
         </div>
-      ) : ( */}
+        ) : (
         <>
             <div className="flex gap-5 p-6">
             <SubscriptionCard onPayment={onPayment} tier={tier} products={stripeProducts} />
             </div>
             <CreditTracker tier={tier} credits={parseInt(credits)} />
         </>
-      {/* )} */}
+        )}
     </>
     )
 }
