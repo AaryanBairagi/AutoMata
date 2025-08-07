@@ -36,6 +36,21 @@ export const onFlowPublish = async (workflowId: string, state: boolean) => {
     return 'Workflow unpublished'
 }
 
+
+export async function onFlowDelete(id: string) {
+    try {
+    // Assuming you use Prisma
+        await prisma?.workflows.delete({
+        where: { id },
+        })
+        return true
+    } catch (error) {
+        console.error("Delete failed", error)
+        return false
+    }
+}
+
+
 export const onCreateNodeTemplate = async (
     content: string,
     type: string,

@@ -42,7 +42,7 @@ return (
 
         {/* Footer */}
         <DrawerFooter className="px-6 pb-6 pt-2 border-t border-white/10">
-            <DrawerClose>
+            <DrawerClose asChild>
                 <Button onClick={handleClose} className="w-[160px] mx-auto bg-red-700 border-0.5 border-white text-foreground hover:bg-red-700/40">
                 Close
                 </Button>
