@@ -1,4 +1,4 @@
-import z, { number } from "zod";
+import z from "zod";
 import { ConnectionProviderProps } from "@/providers/connections-provider";
 import { EditorNode } from "@/providers/editor-provider";
 

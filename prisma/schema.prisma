@@ -18,8 +18,8 @@ model User {
   name         String?
   email        String  @unique
   profileImage String?
-  tier         String? @default("Free")
-  credits      String? @default("10")
+  tier         String? @default("Developer")
+  credits      String? @default("100")
 
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -32,6 +32,7 @@ model User {
   Slack                 Slack[]
   connections           Connections[]
   workflows             Workflows[]
+  logs                  Log[] 
 }
 
 model LocalGoogleCredential{
@@ -118,3 +119,13 @@ model Workflows {
   User              User     @relation(fields: [userId], references: [clerkId])
   userId            String
 }
+
+model Log {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [clerkId])
+  action    String
+  message   String
+  timestamp DateTime @default(now())
+}
+

@@ -47,6 +47,10 @@ export const onContentChange = (
         else if(nodeType === 'Notion'){
             onNotionContent(nodeConnection,event)
         }
+        ////////////////////////////////////////////
+        else if (nodeType === 'Google Drive') {
+            onGoogleDriveContent(nodeConnection, event) // ✅ Add this
+        }
     }
 
 
@@ -151,5 +155,17 @@ export const onNotionContent = (
     nodeConnection.setNotionNode((prev: any) => ({
     ...prev,
     content: event.target.value,
+    }))
+}
+
+
+/////////////////////////
+export const onGoogleDriveContent = (
+    nodeConnection: ConnectionProviderProps,
+    event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+    nodeConnection.setGoogleNode((prev: any) => ({
+    ...prev,
+    content: event.target.value
     }))
 }
