@@ -10,13 +10,14 @@ import { CheckIcon, Github } from "lucide-react";
 
 export default function Home() {
   return (
-      <main className="flex flex-col items-center justify-center pb-10"
-            style={{ background: 'radial-gradient(125% 125% at 50% 10%, #000 35%, #223 100%)',}}>
+      <main className="flex flex-col items-center justify-center pb-10 bg-gradient-to-br from-[#01011d] via-[#0e0e12] to-[#1a1a1d] bg-opacity-70 backdrop-blur-lg "
+            // style={{ background: 'radial-gradient(125% 125% at 50% 10%, #000 35%, #223 100%)',}} 
+          >
           <Navbar/>
           <section className=" min-h-screen w-full rounded-md
           !overflow-visible relative flex flex-col items-center antialiased * ">
-            <div className="absolute inset-0 h-full w-full items-center px-5 py-24
-            ">
+            <div className="absolute inset-0 h-full items-center px-5 py-24 w-full"
+            >
             </div>
             <div className="flex flex-col relative z-10">
               <ContainerScroll 
@@ -33,8 +34,7 @@ export default function Home() {
 
                   </Button>
 
-                  <h1 className="text-balance text-5xl mt-3 md:text-8xl bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-600 
-                    font-sans font-bold">
+                  <h1 className="text-balance text-5xl mt-3 md:text-8xl bg-clip-text text-transparent bg-gradient-to-r from-zinc-700 via-zinc-300 to-gray-100 animate-gradient font-sans font-bold">
                     AI-powered Automation
                   </h1>
                 </div>

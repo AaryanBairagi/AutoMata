@@ -44,35 +44,3 @@ export default async function LogsPage() {
         </div>
     )
 }
-
-
-
-
-// // app/logs/page.tsx
-// import { getLogs } from '@/lib/logs'
-// import { Card, CardContent } from '@/components/ui/card'
-// import { format } from 'date-fns'
-
-// export default async function LogsPage() {
-//     const logs = await getLogs()
-
-//     return (
-//         <div className="p-6 space-y-4">
-//             <h1 className="text-2xl font-bold">Logs</h1>
-
-//             {logs.length === 0 && <p className="text-muted-foreground">No logs yet.</p>}
-
-//             {logs.map((log) => (
-//             <Card key={log.id}>
-//                 <CardContent className="p-4">
-//                     <div className="flex justify-between">
-//                         <p className="font-medium">{log.action}</p>
-//                         <p className="text-sm text-muted-foreground">{format(new Date(log.timestamp), 'PPpp')}</p>
-//                     </div>
-//                     <p className="text-sm mt-1">{log.message}</p>
-//                 </CardContent>
-//             </Card>
-//         ))}
-//         </div>
-//     )
-// }
