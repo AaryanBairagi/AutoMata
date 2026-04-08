@@ -42,16 +42,12 @@ return (
         {isListening ? (
         <Card className="relative w-full max-w-md rounded-2xl border border-white/10 bg-gradient-to-br from-[#1d1e20] to-[#111113] p-6 shadow-xl transition-all duration-300 hover:shadow-2xl">
             <CardContainer>
-                <CardDescription>Listening...</CardDescription>
+                <CardDescription>Connected</CardDescription>
             </CardContainer>
         </Card>
         ) : (
         <Button variant="outline" 
-            className={`relative overflow-hidden px-6 py-3 font-medium text-white transition-all duration-300 
-                rounded-lg shadow-md bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 
-                hover:from-blue-600 hover:via-indigo-600 hover:to-purple-600
-                focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50`}
-
+            className="bg-white/80 hover:bg-white/60"
             {...(!loading && {
                 onClick: reqGoogle,
             })} >
@@ -72,7 +68,7 @@ return (
                 </svg>
             </div>
             ) : (
-                <span className="z-10">Create Listener 🚀</span>
+                <span className="z-10">Create Listener</span>
             )}
         </Button>
         )}

@@ -16,6 +16,8 @@ import {
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { Loader2 } from 'lucide-react'
+import { toast } from "sonner"
+
 
 type Props = {
   user: any
@@ -28,20 +30,29 @@ const ProfileForm = ({ user, onUpdate }: Props) => {
     mode: 'onChange',
     resolver: zodResolver(EditUserProfileSchema),
     defaultValues: {
-      
-    
     name: user.name,
     email: user.email,
     },
   })
 
+
   const handleSubmit = async (
-    values: z.infer<typeof EditUserProfileSchema>
+  values: z.infer<typeof EditUserProfileSchema>
   ) => {
+  try {
     setIsLoading(true)
+
     await onUpdate(values.name)
+
+    toast.success("Profile updated!") 
+
+  } catch (err) {
+    console.error(err)
+    toast.error("Something went wrong")
+  } finally {
     setIsLoading(false)
   }
+}
 
   useEffect(() => {
     form.reset({ name: user.name, email: user.email })
@@ -70,6 +81,7 @@ const ProfileForm = ({ user, onUpdate }: Props) => {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="email"
@@ -88,12 +100,10 @@ const ProfileForm = ({ user, onUpdate }: Props) => {
             </FormItem>
           )}
         />
+
         <Button
           type="submit"
-          className={`relative overflow-hidden w-[160px] border-1 border-black text-center px-6 py-3 font-medium text-white transition-all duration-300 
-              rounded-lg shadow-md bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 
-              hover:from-blue-600 hover:via-indigo-600 hover:to-purple-600
-              focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50`} >
+          className="bg-purple-600 hover:bg-purple-900 rounded-mg text-white/80 hover:text-white/90" >
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -23,14 +23,38 @@ export async function removeProfileImage() {
     })
 }
 
-export async function uploadProfileImage(image: string) {
-    const authUser = await currentUser()
-    if (!authUser) return null
+// export async function uploadProfileImage(image: string) {
+//     const authUser = await currentUser()
+//     if (!authUser) return null
 
-    return await db.user.update({
-        where: { clerkId: authUser.id },
-        data: { profileImage: image },
+//     return await db.user.update({
+//         where: { clerkId: authUser.id },
+//         data: { profileImage: image },
+//     })
+// }
+
+export const uploadProfileImage = async (file: any) => {
+  try {
+    const imageUrl = file.cdnUrl // Uploadcare URL
+
+    if (!imageUrl) {
+      throw new Error("No image URL received")
+    }
+
+    const user = await getCurrentUserData()
+
+    await prisma?.user.update({
+      where: { id: user?.id },
+      data: {
+        profileImage: imageUrl,
+      },
     })
+
+    return imageUrl
+  } catch (err) {
+    console.error("UPLOAD ERROR:", err)
+    return null
+  }
 }
 
 export async function updateUserName(name: string) {

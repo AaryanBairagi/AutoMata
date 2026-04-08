@@ -45,13 +45,34 @@ const EditorCanvasCardSingle = ({data}:{data: EditorCanvasCardType}) => {
                 </CardHeader>
                 <Badge variant="secondary" className="absolute right-2 top-2">{data.type}</Badge>
                 <div className={clsx('absolute left-3 top-4 h-2 w-2 rounded-full' , 
-                    {'bg-green-500':Math.random() <0.6 , 
-                    'bg-orange-500':Math.random() >=0.6 && Math.random() < 0.8 , 
-                    'bg-red-500': Math.random() >=0.8 } )}>
+                        {
+                        'bg-green-500': data.completed,
+                        'bg-yellow-500': data.current,
+                        'bg-red-500': !data.completed && !data.current,
+                        }
+                    )}
+                    >
                 </div>
             </Card>
-            <CustomHandle type="source" position={Position.Bottom} style={{ zIndex: 100 }} id="a" />
-    </>
+            {data.type === "Condition" ? (
+            <>
+            <CustomHandle
+                type="source"
+                position={Position.Bottom}
+                id="true"
+                style={{ left: "30%" }}
+            />
+            <CustomHandle
+                type="source"
+                position={Position.Bottom}
+                id="false"
+                style={{ left: "70%" }}
+            />
+            </>
+            ) : (
+            <CustomHandle type="source" position={Position.Bottom} />
+            )}
+        </>
     )
 }
 

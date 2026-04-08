@@ -14,8 +14,9 @@ const fonts = DM_Sans({
 });
 
 export const metadata: Metadata = {
+  icons:"/fuzzieLogo.png",
   title: "AutoMata",
-  description: "Welcome to AutoMata , AI-powered Automation for your all tasks",
+  description: "AI-powered Automation for your all tasks",
 };
 
 export default function RootLayout({
@@ -34,11 +35,6 @@ export default function RootLayout({
                 <Toaster />
               </ModalProvider>
             </BillingProvider>
-            
-            {/* <ModalProvider>
-              {children}
-              <Toaster />
-            </ModalProvider> */}
           </ThemeProvider>
         </body>
       </html>

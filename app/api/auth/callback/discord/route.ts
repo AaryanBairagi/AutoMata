@@ -12,7 +12,7 @@ export async function GET(req:NextRequest){
         data.append('client_id',process.env.DISCORD_CLIENT_ID!)
         data.append('client_secret',process.env.DISCORD_CLIENT_SECRET!)
         data.append('grant_type','authorization_code')
-        data.append('redirect_uri','https://localhost:3000/api/auth/callback/discord')
+        data.append('redirect_uri','http://localhost:3000/api/discord')
         data.append('code', code.toString())
 
         const output = await axios.post(

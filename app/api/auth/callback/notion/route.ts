@@ -6,7 +6,7 @@ export async function GET(req:NextRequest){
     const code = req.nextUrl.searchParams.get('code');
     const encoded = Buffer.from(`${process.env.NOTION_CLIENT_ID}:${process.env.NOTION_API_SECRET}`).toString('base64');
     if(code){
-        const response = await axios('https://api.notion.com/v1/oauth/token',{
+        const response = await axios('http://api.notion.com/v1/oauth/token',{
             method:'POST',
             headers:{
                 'Content-Type': 'application/json',
@@ -40,9 +40,9 @@ export async function GET(req:NextRequest){
 
             console.log(databaseId);
 
-            return NextResponse.redirect(`https://localhost:3000/connections?access_token=${response.data.access_token}&workspace_name=${response.data.workspace_name}&workspace_icon=${response.data.workspace_icon}&workspace_id=${response.data.workspace_id}&database_id=${databaseId}`)
+            return NextResponse.redirect(`http://localhost:3000/connections?access_token=${response.data.access_token}&workspace_name=${response.data.workspace_name}&workspace_icon=${response.data.workspace_icon}&workspace_id=${response.data.workspace_id}&database_id=${databaseId}`)
         }
     }
-    return NextResponse.redirect('https://localhost:3000/connections');
+    return NextResponse.redirect('http://localhost:3000/connections');
 }
 

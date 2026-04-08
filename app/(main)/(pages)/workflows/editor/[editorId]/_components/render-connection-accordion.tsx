@@ -46,8 +46,7 @@ const RenderConnectionAccordion = ({
 const { title, image, description, connectionKey, accessTokenKey, alwaysTrue, slackSpecial, } = connection
 
 const { nodeConnection } = useNodeConnections()
-const { slackChannels, selectedSlackChannels, setSelectedSlackChannels } =
-    useFuzzieStore()
+const { slackChannels, selectedSlackChannels, setSelectedSlackChannels } = useFuzzieStore()
 
 const [open, setOpen] = React.useState(false)
 const [value, setValue] = React.useState('')
@@ -59,6 +58,7 @@ const isConnected =
     (nodeConnection[connectionKey] &&
     accessTokenKey &&
     connectionData[accessTokenKey!])
+
 
 return (
     <AccordionContent key={title}>

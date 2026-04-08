@@ -19,6 +19,18 @@ export default function SettingsClient() {
 
   if (!user) return <div className="p-6 text-white">Loading user settings...</div>
 
+  const handleUpload = async (file: any) => {
+  const url = await uploadProfileImage(file)
+
+  if (url) {
+    setUser((prev: any) => ({
+      ...prev,
+      profileImage: url,
+    }))
+  }
+}
+
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="z-[10] flex items-center justify-between border-b bg-background p-6 text-4xl">
@@ -31,15 +43,16 @@ export default function SettingsClient() {
           <p className="text-base text-white/50">Add or update your information</p>
         </div>
 
-            <ProfilePicture
+          <ProfilePicture
             onDelete={removeProfileImage}
             userImage={user?.profileImage || ''}
-            onUpload={uploadProfileImage}
-            />
-            <ProfileForm
+            onUpload={handleUpload}
+          />
+
+          <ProfileForm
             user={user}
             onUpdate={updateUserName}
-            />
+          />
         </div>
     </div>
   )

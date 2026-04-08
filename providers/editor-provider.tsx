@@ -84,8 +84,8 @@ const editorReducer = (
                 ...state,
                 editor:{
                     ...state.editor,
-                    elements: action.payload.elements || initialEditorState.elements,
-                    edges: action.payload.edges
+                    elements: action.payload.elements || [],
+                    edges: action.payload.edges || []
                 },
             }
 
@@ -113,6 +113,39 @@ const editorReducer = (
                 return undoState;
             }
             return state;
+        
+        case "UPDATE_NODE": {
+            const updatedElements = action.payload.elements;
+
+            const updatedSelected = updatedElements.find(
+                (el) => el.id === state.editor.selectedNode?.id
+            );
+
+            return {
+                ...state,
+                editor: {
+                    ...state.editor,
+                    elements: updatedElements,
+                    selectedNode: updatedSelected || state.editor.selectedNode,
+                },
+            };
+        }
+
+        case "DELETE_NODE":
+    return {
+    ...state,
+    editor: {
+      ...state.editor,
+      elements: state.editor.elements.filter(
+        (n) => n.id !== action.payload.id
+      ),
+      edges: state.editor.edges.filter(
+        (e) =>
+          e.source !== action.payload.id &&
+          e.target !== action.payload.id
+      ),
+    },
+  }
 
         default:
             return state;

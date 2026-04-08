@@ -3,11 +3,23 @@
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import Image from "next/image"
-import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { useState } from "react"
 import { toast } from "sonner"
 import { onFlowPublish, onFlowDelete } from "../_actions/workflow-connections"
+import { Trash2 } from "lucide-react"
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog"
+import { useRouter } from "next/navigation"
 
 type Props = {
     name: string
@@ -17,18 +29,16 @@ type Props = {
 }
 
 const Workflow = ({ name, description, id, publish }: Props) => {
+    const router = useRouter();
     const [isPublished, setIsPublished] = useState(publish ?? false)
     const [isVisible, setIsVisible] = useState(true)
 
     const handleDelete = async () => {
-        const confirm = window.confirm("Are you sure you want to delete this workflow?")
-        if (!confirm) return
-
         const result = await onFlowDelete(id)
 
         if (result) {
             toast.success("Workflow deleted!")
-            setIsVisible(false) // Hide the card after deletion
+            setIsVisible(false) 
         } else {
             toast.error("Failed to delete workflow.")
         }
@@ -44,16 +54,46 @@ const Workflow = ({ name, description, id, publish }: Props) => {
 
     return (
         <div className="flex py-6 justify-center">
-            <Card className="relative flex w-full max-w-6xl items-center justify-between border border-white/10 bg-white/5 backdrop-blur-lg p-4 shadow-md rounded-lg">
+        <Card 
+            onClick={() => router.push(`/workflows/editor/${id}`)}
+            className="relative flex w-full max-w-6xl items-center justify-between border border-white/10 bg-white/5 backdrop-blur-lg p-4 shadow-md rounded-lg"
+        >
                 
-                {/* DELETE BUTTON */}
-                <button
-                    onClick={handleDelete}
-                    className="absolute top-3 right-3 rounded-md px-3 py-1.5 text-sm font-medium bg-red-800 hover:bg-red-700 text-white shadow-md transition-all border border-white/10"
-                    aria-label="Delete Workflow"
-                >
-                    DELETE
+        {/* DELETE DIALOG */}
+        <AlertDialog>
+        <AlertDialogTrigger asChild>
+            <button onClick={(e)=> {e.stopPropagation()}} className="absolute top-4 right-4 p-2 rounded-lg bg-zinc-800 hover:bg-red-500/20 transition-all">
+            <Trash2 className="w-4 h-4 text-zinc-400 hover:text-red-400" />
                 </button>
+        </AlertDialogTrigger>
+
+        <AlertDialogContent className="bg-zinc-900 border border-zinc-800">
+            <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">
+                Delete Workflow
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-zinc-400">
+                This action cannot be undone. This will permanently delete your workflow.
+            </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <AlertDialogFooter>
+            <AlertDialogCancel className="bg-zinc-800 text-white hover:bg-zinc-700">
+                Cancel
+            </AlertDialogCancel>
+
+            <AlertDialogAction
+                className="bg-red-500 hover:bg-red-600 text-white"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleDelete()
+                }}
+            >
+             Delete
+            </AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+        </AlertDialog>
 
                 {/* LEFT SIDE */}
                 <div className="flex items-center gap-6">
@@ -79,20 +119,24 @@ const Workflow = ({ name, description, id, publish }: Props) => {
                 </CardContent>
 
                 {/* RIGHT SIDE */}
-                <div className="flex flex-col items-center gap-2 p-4">
-                    <Switch
-                        checked={isPublished}
-                        onCheckedChange={async (checked) => {
-                            setIsPublished(checked)
-                            const response = await onFlowPublish(id, checked)
-                            if (response) toast.message(response)
-                        }}
-                        className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-red-600 h-6 w-12 border-1 border-accent-foreground"
-                    />
-                    <Label htmlFor={`workflow-${id}`} className="text-muted-foreground">
-                        {isPublished ? "ON" : "OFF"}
-                    </Label>
+                <div className="flex flex-col items-center gap-3">
+  
+                <Switch
+                    onClick={(e)=>{e.stopPropagation()}}
+                    checked={isPublished}
+                    onCheckedChange={async (checked) => {
+                    setIsPublished(checked)
+                    const response = await onFlowPublish(id, checked)
+                    if (response) toast.message(response)
+                    }}
+                />
+                
+                <p className="text-sm text-zinc-400">
+                    {isPublished ? "Active" : "Inactive"}
+                </p>
+
                 </div>
+
             </Card>
         </div>
     )

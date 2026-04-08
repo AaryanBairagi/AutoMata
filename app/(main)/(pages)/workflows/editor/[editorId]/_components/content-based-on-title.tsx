@@ -3,63 +3,64 @@
 import React, { useEffect } from 'react'
 import axios from 'axios'
 import { toast } from 'sonner'
-
 import { AccordionContent } from '@/components/ui/accordion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-
 import { ConnectionProviderProps } from '@/providers/connections-provider'
-import { EditorState } from '@/providers/editor-provider'
+import { EditorState, useEditor } from '@/providers/editor-provider'
 import { nodeMapper } from '@/lib/types'
-import { onContentChange } from '@/lib/editor-utils'
-
 import GoogleFileDetails from './google-file-details'
 import GoogleDriveFiles from './google-drive-files'
 import ActionButton from './action-button'
 
 export interface Option {
-    value: string
-    label: string
-    disable?: boolean
-    fixed?: boolean
-    [key: string]: string | boolean | undefined
+  value: string
+  label: string
+  disable?: boolean
+  fixed?: boolean
+  [key: string]: string | boolean | undefined
 }
 
 interface Props {
-    nodeConnection: ConnectionProviderProps
-    newState: EditorState
-    file: any
-    setFile: (file: any) => void
-    selectedSlackChannels: Option[]
-    setSelectedSlackChannels: (value: Option[]) => void
+  nodeConnection: ConnectionProviderProps
+  newState: EditorState
+  file: any
+  setFile: (file: any) => void
+  selectedSlackChannels: Option[]
+  setSelectedSlackChannels: (value: Option[]) => void
 }
 
 const ContentBasedOnTitle = ({
-    nodeConnection,
-    newState,
-    file,
-    setFile,
-    selectedSlackChannels,
-    setSelectedSlackChannels,
+  nodeConnection,
+  newState,
+  file,
+  setFile,
+  selectedSlackChannels,
+  setSelectedSlackChannels,
 }: Props) => {
-    const { selectedNode } = newState.editor
-    const title = selectedNode.data.title
 
-    useEffect(() => {
+  const { state, dispatch } = useEditor()
+  const selectedNode = state.editor.selectedNode
+
+  const title = selectedNode.data.title
+  const content = selectedNode.data.metadata?.content || ""
+
+
+  // FETCH GOOGLE FILE
+  useEffect(() => {
     const reqGoogle = async () => {
-          try {
+      try {
         const response = await axios.get('/api/drive')
         const files = response?.data?.message?.files
 
         if (Array.isArray(files) && files.length > 0) {
-          console.log(files[0])
-          toast.message('Fetched File')
           setFile(files[0])
+          toast.message('Fetched File')
         } else {
           toast.error('No files found')
         }
       } catch (error) {
-        console.error('Error fetching from /api/drive', error)
+        console.error(error)
         toast.error('Something went wrong')
       }
     }
@@ -69,35 +70,89 @@ const ContentBasedOnTitle = ({
 
   // @ts-ignore
   const nodeConnectionType: any = nodeConnection[nodeMapper[title]]
-  if (!nodeConnectionType) return <p>Not connected</p>
+  const noConnectionRequired = ["Trigger", "Condition", "AI"]
+
+  if (noConnectionRequired.includes(title)) {
+  return (
+    <AccordionContent>
+      <Card>
+        <div className="p-4 text-sm text-zinc-400">
+          No connection required for {title}
+        </div>
+      </Card>
+    </AccordionContent>
+  )
+  }
 
   const isConnected =
     title === 'Google Drive'
       ? !nodeConnection.isLoading
       : !!nodeConnectionType[
-          `${
-            title === 'Slack'
-              ? 'slackAccessToken'
-              : title === 'Discord'
-              ? 'webhookURL'
-              : title === 'Notion'
-              ? 'accessToken'
-              : ''
-          }`
+          title === 'Slack'
+            ? 'slackAccessToken'
+            : title === 'Discord'
+            ? 'webhookURL'
+            : title === 'Notion'
+            ? 'accessToken'
+            : ''
         ]
+  
+  if (!isConnected && !noConnectionRequired.includes(title)) {
+  return (
+    <div className="p-4 text-sm text-red-400">
+      Please connect {title} to continue
+    </div>
+  )
+  }
 
-  if (!isConnected) return <p>Not connected</p>
+  //  IMPORTANT FIX — STORE IN NODE METADATA
+  const handleChange = (value: string) => {
+  dispatch({
+  type: "UPDATE_NODE",
+  payload: {
+    elements: state.editor.elements.map((node) =>
+      node.id === selectedNode.id
+        ? {
+            ...node,
+            data: {
+              ...node.data,
+              metadata: {
+                ...node.data.metadata,
+                content: value,
+              },
+            },
+          }
+        : node
+    ),
+  },
+  })
+  }
 
-  const contentValue =
-    typeof nodeConnectionType.content === 'string'
-      ? nodeConnectionType.content
-      : nodeConnectionType.content && Object.keys(nodeConnectionType.content).length > 0
-      ? JSON.stringify(nodeConnectionType.content)
-      : ''
-
+  const handleChangeMeta = (key: string, value: any) => {
+  dispatch({
+    type: "UPDATE_NODE",
+    payload: {
+      elements: state.editor.elements.map((node) =>
+        node.id === selectedNode.id
+          ? {
+              ...node,
+              data: {
+                ...node.data,
+                metadata: {
+                  ...node.data.metadata,
+                  [key]: value,
+                },
+              },
+            }
+          : node
+      ),
+    },
+  })
+  }
   return (
     <AccordionContent>
       <Card>
+
         {title === 'Discord' && (
           <CardHeader>
             <CardTitle>{nodeConnectionType.webhookName}</CardTitle>
@@ -105,20 +160,50 @@ const ContentBasedOnTitle = ({
           </CardHeader>
         )}
 
-        <div className="flex flex-col gap-3 px-6 py-3 pb-20">
-          <p>{title === 'Notion' ? 'Values to be stored' : 'Message'}</p>
+      <div className="flex flex-col gap-3 px-6 py-3 pb-20">
+        
+    {/* CONDITION NODE UI */}
+    {title === "Condition" && (
+    <div className="flex flex-col gap-3 p-3 border rounded-lg bg-muted/30">
+
+      <p className="text-sm font-medium">Condition</p>
+
+      <Input
+        placeholder="Value (e.g. error)"
+        value={selectedNode.data.metadata?.value || ""}
+        onChange={(e) => handleChangeMeta("value", e.target.value)}
+      />
+
+      <select
+        className="p-2 rounded-md bg-background border"
+        value={selectedNode.data.metadata?.condition || "includes"}
+        onChange={(e) => handleChangeMeta("condition", e.target.value)}
+      >
+        <option value="includes">Includes</option>
+        <option value="equals">Equals</option>
+        <option value="startsWith">Starts With</option>
+      </select>
+
+      </div>
+      )}
+
+          <p>
+            {title === 'Notion' ? 'Values to be stored' : 'Message'}
+          </p>
 
           <Input
             type="text"
-            value={nodeConnectionType.content}
-            onChange={(event) => onContentChange(nodeConnection, title, event)}
+            value={selectedNode.data.metadata?.content || ""}
+            onChange={(e) => handleChange(e.target.value)}    
           />
 
+          {/* GOOGLE FILE PREVIEW */}
           {JSON.stringify(file) !== '{}' && title !== 'Google Drive' && (
             <Card className="w-full">
               <CardContent className="px-2 py-3">
                 <div className="flex flex-col gap-4">
                   <CardDescription>Drive File</CardDescription>
+
                   <div className="flex flex-wrap gap-2">
                     <GoogleFileDetails
                       nodeConnection={nodeConnection}
@@ -126,19 +211,25 @@ const ContentBasedOnTitle = ({
                       gFile={file}
                     />
                   </div>
+
                 </div>
               </CardContent>
             </Card>
           )}
 
+          {/* GOOGLE DRIVE LISTENER */}
           {title === 'Google Drive' && <GoogleDriveFiles />}
 
+          {/* ACTION BUTTONS */}
           <ActionButton
             currentService={title}
-            nodeConnection={nodeConnection}
+            nodeConnection={{
+              ...(nodeConnection as any)[nodeMapper[title]],
+              content,
+            }}
             channels={selectedSlackChannels}
-            setChannels={setSelectedSlackChannels}
           />
+
         </div>
       </Card>
     </AccordionContent>
@@ -146,150 +237,3 @@ const ContentBasedOnTitle = ({
 }
 
 export default ContentBasedOnTitle
-
-
-
-
-
-
-
-
-
-// import { AccordionContent } from '@/components/ui/accordion'
-// import { ConnectionProviderProps } from '@/providers/connections-provider'
-// import { EditorState } from '@/providers/editor-provider'
-// import { nodeMapper } from '@/lib/types'
-// import React, { useEffect } from 'react'
-// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-// import { Input } from '@/components/ui/input'
-// import { onContentChange } from '@/lib/editor-utils'
-// import GoogleFileDetails from './google-file-details'
-// import GoogleDriveFiles from './google-drive-files'
-// import ActionButton from './action-button'
-// import { getFileMetaData } from '@/app/(main)/(pages)/connections/_actions/google-connection'
-// import axios from 'axios'
-// import { toast } from 'sonner'
-
-// export interface Option {
-//     value: string
-//     label: string
-//     disable?: boolean
-//   /** fixed option that can't be removed. */
-//     fixed?: boolean
-//   /** Group the options by providing key. */
-//     [key: string]: string | boolean | undefined
-// }
-
-// interface GroupOption {
-//     [key: string]: Option[]
-// }
-
-// type Props = {
-//     nodeConnection: ConnectionProviderProps
-//     newState: EditorState
-//     file: any
-//     setFile: (file: any) => void
-//     selectedSlackChannels: Option[]
-//     setSelectedSlackChannels: (value: Option[]) => void
-// }
-
-// const ContentBasedOnTitle = ({
-//     nodeConnection,
-//     newState,
-//     file,
-//     setFile,
-//     selectedSlackChannels,
-//     setSelectedSlackChannels,
-//     }: Props) => {
-//         const { selectedNode } = newState.editor
-//         const title = selectedNode.data.title
-
-// useEffect(() => {
-//     const reqGoogle = async () => {
-//         try {
-//             const response = await axios.get('/api/drive')
-//             const files = response?.data?.message?.files
-//             if (Array.isArray(files) && files.length > 0) {
-//                 console.log(files[0])
-//                 toast.message("Fetched File")
-//                 setFile(files[0])
-//             } else {
-//                 toast.error("No files found")
-//             }
-//         } catch (error) {
-//             console.error("Error fetching from /api/drive", error)
-//             toast.error("Something went wrong")
-//         }
-//     }
-
-//     reqGoogle()
-// }, [])
-
-
-//     // @ts-ignore
-//     const nodeConnectionType: any = nodeConnection[nodeMapper[title]]
-//     if (!nodeConnectionType) return <p>Not connected</p>
-
-//     const isConnected =
-//         title === 'Google Drive' ? 
-//         !nodeConnection.isLoading
-//         : !!nodeConnectionType[
-//             `${
-//                 title === 'Slack'
-//                 ? 'slackAccessToken'
-//                 : title === 'Discord'
-//                 ? 'webhookURL'
-//                 : title === 'Notion'
-//                 ? 'accessToken'
-//                 : ''
-//                 }`
-//             ]
-
-//     if (!isConnected) return <p>Not connected</p>
-
-//     return (
-//     <AccordionContent>
-//         <Card>
-//         {title === 'Discord' && (
-//             <CardHeader>
-//                 <CardTitle>{nodeConnectionType.webhookName}</CardTitle>
-//                 <CardDescription>{nodeConnectionType.guildName}</CardDescription>
-//             </CardHeader>
-//             )}
-//         <div className="flex flex-col gap-3 px-6 py-3 pb-20">
-//             <p>{title === 'Notion' ? 'Values to be stored' : 'Message'}</p>
-
-//             <Input type="text" 
-//             value={nodeConnectionType.content} 
-//             // value={
-//             //     typeof nodeConnectionType.content === 'string'
-//             //     ? nodeConnectionType.content
-//             //     : (nodeConnectionType.content && Object.keys(nodeConnectionType.content).length > 0)
-//             //     ? JSON.stringify(nodeConnectionType.content)
-//             //     : ''
-//             // }
-            
-//             onChange={(event) => onContentChange(nodeConnection, title, event)} />
-
-
-//             {JSON.stringify(file) !== '{}' && title !== 'Google Drive' && (
-//                 <Card className="w-full">
-//                     <CardContent className="px-2 py-3">
-//                     <div className="flex flex-col gap-4">
-//                         <CardDescription>Drive File</CardDescription>
-//                         <div className="flex flex-wrap gap-2">
-//                         <GoogleFileDetails nodeConnection={nodeConnection} title={title} gFile={file} />
-//                         </div>
-//                     </div>
-//                     </CardContent>
-//                 </Card>
-//             )}
-//             { title === 'Google Drive' && (<GoogleDriveFiles />) }
-//             <ActionButton currentService={title} nodeConnection={nodeConnection} channels={selectedSlackChannels} setChannels={setSelectedSlackChannels} />
-//         </div>
-//         </Card>
-//     </AccordionContent>
-// )
-// }
-
-// export default ContentBasedOnTitle

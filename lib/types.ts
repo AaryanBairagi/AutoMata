@@ -85,6 +85,12 @@ export type EditorActions =
             type : 'UNDO'
     }
     |   {
+            type: "DELETE_NODE"
+            payload: {
+                id: string
+             }
+        }
+    |   {
             type : 'SELECTED_ELEMENT'
             payload: {
                 elements : EditorNode
