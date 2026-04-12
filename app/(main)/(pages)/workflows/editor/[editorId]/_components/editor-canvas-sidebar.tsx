@@ -59,29 +59,34 @@ return (
             <button
                 onClick={async () => {
                 try {
+                let currentElements = [...state.editor.elements];
                 await executeWorkflow(nodes, edges, (updatedNodeId, status) => {
+                
+                currentElements = currentElements.map((n) => {
+                if (n.id === updatedNodeId) {
+                return {
+                    ...n,
+                    data: {
+                        ...n.data,
+                        current: status === "running",
+                        completed: status === "completed" || n.data.completed,
+                    },
+                }
+                }
+
+                return {
+                    ...n,
+                    data: {
+                        ...n.data,
+                        current: false,
+                    },
+                    }
+                })
+                
                 dispatch({
                     type: "UPDATE_NODE",
                     payload: {
-                        elements: state.editor.elements.map((n) => {
-                            if (n.id === updatedNodeId) {
-                            return {
-                                ...n,
-                                data: {
-                                    ...n.data,
-                                    current: status === "running",
-                                    completed: status === "completed" || n.data.completed,
-                                },
-                            }
-                        }
-                        return {
-                            ...n,
-                            data:{
-                                ...n.data,
-                                current:false
-                            }
-                        }
-                    }),
+                        elements : currentElements
                     },
                     })
                 })
