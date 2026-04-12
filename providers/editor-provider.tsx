@@ -132,20 +132,20 @@ const editorReducer = (
         }
 
         case "DELETE_NODE":
-    return {
-    ...state,
-    editor: {
-      ...state.editor,
-      elements: state.editor.elements.filter(
-        (n) => n.id !== action.payload.id
-      ),
-      edges: state.editor.edges.filter(
-        (e) =>
-          e.source !== action.payload.id &&
-          e.target !== action.payload.id
-      ),
-    },
-  }
+        return {
+        ...state,
+        editor: {
+        ...state.editor,
+        elements: state.editor.elements.filter(
+            (n) => n.id !== action.payload.id
+        ),
+        edges: state.editor.edges.filter(
+            (e) =>
+            e.source !== action.payload.id &&
+            e.target !== action.payload.id
+        ),
+        },
+    }
 
         default:
             return state;

@@ -205,6 +205,35 @@ const runNode = async (node: NodeType, context: any) => {
       ...context,
       lastOutput: context.lastOutput,
     }
+
+    // 📧 EMAIL
+    case "Email":
+    const emailText = context.lastOutput || content
+
+    toast.loading("Sending email...")
+
+    try {
+      await fetch("/api/email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: node.data?.metadata?.to || "your@email.com",
+          subject: node.data?.metadata?.subject || "AutoMata Email",
+          text: emailText,
+        }),
+      })
+
+      toast.success("Email sent!")
+    } catch (err) {
+      toast.error("Email failed")
+    }
+
+    return {
+      ...context,
+      lastOutput: emailText,
+    }
     
     default:
       console.log("Unknown:", node.type)

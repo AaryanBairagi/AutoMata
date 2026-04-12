@@ -1,21 +1,26 @@
-import { NextResponse } from "next/server"
-import { Resend } from "resend"
-
-const resend = new Resend(process.env.RESEND_API_KEY)
+import nodemailer from "nodemailer"
 
 export async function POST(req: Request) {
-  const { message } = await req.json()
-
   try {
-    await resend.emails.send({
-      from: "onboarding@resend.dev",
-      to: "aaryanbairagi11@gmail.com", // change later
-      subject: "AutoMata Workflow Email",
-      text: message,
+    const { to, subject, text } = await req.json()
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
     })
 
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    return NextResponse.json({ error }, { status: 500 })
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to,
+      subject,
+      text,
+    })
+
+    return Response.json({ success: true })
+  } catch (err) {
+    return Response.json({ success: false, error: err })
   }
 }
