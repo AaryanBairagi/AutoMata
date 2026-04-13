@@ -108,7 +108,7 @@ export const CONNECTIONS: Connection[] = [
         description: 'Connect your google drive to listen to folder changes',
         image: '/googleDrive.png',
         connectionKey: 'googleNode',
-        alwaysTrue: true,
+        alwaysTrue: false,
     },
     {
         title: 'Discord',
@@ -131,6 +131,27 @@ export const CONNECTIONS: Connection[] = [
         connectionKey: 'slackNode',
         accessTokenKey: 'slackAccessToken',
         slackSpecial: true,
+    },
+    {
+        title: 'Email',
+        description: 'Send emails using your connected account.',
+        image: '/email.png',
+        connectionKey: 'emailNode',
+        alwaysTrue: true,
+    },    
+    {
+        title: 'AI',
+        description: 'Generate content using AI.',
+        image: '/ai.png',
+        connectionKey: 'aiNode',
+        alwaysTrue: true,
+    },
+    {
+        title: 'Google Calendar',
+        description: 'Create calendar events and reminders.',
+        image: '/calendar.png',
+        connectionKey: 'calendarNode',
+        accessTokenKey: 'accessToken',
     },
 ]
 
