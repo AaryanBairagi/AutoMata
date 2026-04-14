@@ -42,12 +42,6 @@ const ConnectionCard = ({
         return process.env.NEXT_PUBLIC_NOTION_AUTH_URL!
       case "Slack":
         return process.env.NEXT_PUBLIC_SLACK_REDIRECT!
-
-      case "Google Drive":
-        return "/api/drive"
-      case "Google Calendar":
-        return "/api/drive"
-
       default:
         return "#"
     }
@@ -79,11 +73,34 @@ const ConnectionCard = ({
             Disconnect
           </Button>
         ) : (
-          <Link href={getConnectionLink(title)}>
-            <Button className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl">
-              Connect
-            </Button>
-          </Link>
+        <Button
+  onClick={async () => {
+    if (title === "Google Drive") {
+      await fetch("/api/drive");
+      window.location.reload();
+      return;
+    }
+
+    if (title === "Google Calendar") {
+      const res = await fetch("/api/calendar");
+      const data = await res.json();
+
+      if (data?.redirect) {
+        window.location.href = data.redirect;
+        return;
+      }
+
+      window.location.reload();
+      return;
+    }
+
+    const url = getConnectionLink(title);
+    window.location.href = url;
+  }}
+  className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl"
+>
+  Connect
+</Button>
         )}
       </div>
 
