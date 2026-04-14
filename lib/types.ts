@@ -13,7 +13,7 @@ export const WorkflowFormSchema = z.object({
     description: z.string().min(1,'Description is Required !')
 });
 
-export type ConnectionTypes = 'Google Drive' | 'Notion' | 'Slack' | 'Discord'
+export type ConnectionTypes = 'Google Drive' | 'Notion' | 'Slack' | 'Discord' | 'Google Calendar' | 'AI' | 'Email'
 
 export type Connection = {
     title: ConnectionTypes

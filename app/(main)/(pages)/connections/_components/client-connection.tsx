@@ -15,9 +15,12 @@ type Props = {
 
 const ClientConnections = ({ searchParams, userId }: Props) => {
   const [connections, setConnections] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const setupConnections = async () => {
+      setLoading(true);
+
       const {
         webhook_id = "",
         webhook_name = "",
@@ -77,6 +80,7 @@ const ClientConnections = ({ searchParams, userId }: Props) => {
       });
 
       setConnections(connectionMap);
+      setLoading(false);
     };
 
     setupConnections();
@@ -93,7 +97,16 @@ const ClientConnections = ({ searchParams, userId }: Props) => {
           </p>
         </div>
       </div>
-
+      {  loading && (
+      <div className="p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {[1,2,3,4].map(i => (
+          <div key={i} className="h-24 bg-zinc-800 animate-pulse rounded-xl" />
+        ))}
+      </div>
+    </div>
+      )
+    }
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {connections &&
           CONNECTIONS.map((connection) => (

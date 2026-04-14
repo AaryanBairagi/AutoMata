@@ -34,6 +34,22 @@ export type ConnectionProviderProps = {
     content: string
     }
     setSlackNode: React.Dispatch<React.SetStateAction<any>>
+    emailNode: {
+    to: string
+    subject: string
+    body: string
+    }
+    setEmailNode: React.Dispatch<React.SetStateAction<any>>
+
+    aiNode: {
+    prompt: string
+    }
+    setAiNode: React.Dispatch<React.SetStateAction<any>>
+
+    calendarNode: {
+    accessToken: string
+    }
+    setCalendarNode: React.Dispatch<React.SetStateAction<any>>
     setWorkFlowTemplate: React.Dispatch<
     React.SetStateAction<{
         discord?: string
@@ -68,7 +84,7 @@ const InitialValues: ConnectionProviderProps = {
     notion: '',
     slack: '',
     },
-slackNode: {
+    slackNode: {
     appId: '',
     authedUserId: '',
     authedUserToken: '',
@@ -78,11 +94,25 @@ slackNode: {
     teamName: '',
     content: '',
     },
+    emailNode: {
+    to: '',
+    subject: '',
+    body: '',
+    },
+    aiNode: {
+    prompt: '',
+    },
+    calendarNode: {
+    accessToken: '',
+    },
     isLoading: false,
     setGoogleNode: () => undefined,
     setDiscordNode: () => undefined,
     setNotionNode: () => undefined,
     setSlackNode: () => undefined,
+    setEmailNode: () => undefined,
+    setAiNode: () => undefined,
+    setCalendarNode: () => undefined,
     setIsLoading: () => undefined,
     setWorkFlowTemplate: () => undefined,
     }
@@ -95,24 +125,33 @@ export const ConnectionsProvider = ({ children }: ConnectionWithChildProps) => {
     const [googleNode, setGoogleNode] = useState(InitialValues.googleNode)
     const [notionNode, setNotionNode] = useState(InitialValues.notionNode)
     const [slackNode, setSlackNode] = useState(InitialValues.slackNode)
+    const [emailNode, setEmailNode] = useState(InitialValues.emailNode)
+    const [aiNode, setAiNode] = useState(InitialValues.aiNode)
+    const [calendarNode, setCalendarNode] = useState(InitialValues.calendarNode)
     const [isLoading, setIsLoading] = useState(InitialValues.isLoading)
     const [workflowTemplate, setWorkFlowTemplate] = useState(
     InitialValues.workflowTemplate
     )
 
     const values = {
-    discordNode,
-    setDiscordNode,
-    googleNode,
-    setGoogleNode,
-    notionNode,
-    setNotionNode,
-    slackNode,
-    setSlackNode,
-    isLoading,
-    setIsLoading,
-    workflowTemplate,
-    setWorkFlowTemplate,
+        discordNode,
+        setDiscordNode,
+        googleNode,
+        setGoogleNode,
+        notionNode,
+        setNotionNode,
+        slackNode,
+        setSlackNode,
+        emailNode,
+        setEmailNode,
+        aiNode,
+        setAiNode,
+        calendarNode,
+        setCalendarNode,
+        isLoading,
+        setIsLoading,
+        workflowTemplate,
+        setWorkFlowTemplate,
     }
 
     return <Provider value={values}>{children}</Provider>

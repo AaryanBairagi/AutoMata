@@ -1,9 +1,9 @@
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server"; // still use this for session info
-import { createClerkClient } from "@clerk/clerk-sdk-node"; // ✅ correct SDK for backend
+import { createClerkClient } from "@clerk/clerk-sdk-node"; // 
 import { google } from "googleapis";
 import { NextResponse } from "next/server";
-import { v4 as uuidv4 } from "uuid"; // ✅ correct uuid import
+import { v4 as uuidv4 } from "uuid"; // 
 
 // Initialize Clerk instance
 const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY! });
@@ -20,7 +20,6 @@ export async function GET() {
         return NextResponse.json({ message: "User not found" }, { status: 401 });
     }
 
-  // ✅ Use Clerk Node SDK properly
     const clerkResponse = await clerk.users.getUserOauthAccessToken(
         userId,
         "oauth_google"
@@ -43,6 +42,20 @@ export async function GET() {
         auth: oauth2Client,
     });
 
+    await db.connections.upsert({
+    where:{
+        userId_type: {
+            userId,
+            type:"Google Drive"
+        }
+    },
+    update:{},
+    create: {
+        userId,
+        type: "Google Drive",
+    },
+    });
+    
     const channelId = uuidv4();
 
     const startPageTokenRes = await drive.changes.getStartPageToken({});
