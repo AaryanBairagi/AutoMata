@@ -12,6 +12,10 @@ type EdgeType = {
   label?:string
 }
 
+type WorkflowContext = {
+  lastOutput?: any
+  nodeOutputs: Record<string, any>
+}
 
 
 export const executeWorkflow = async (
@@ -23,7 +27,10 @@ export const executeWorkflow = async (
   if (!triggerNode) throw new Error("No trigger node")
 
   let currentNode: NodeType | undefined = triggerNode
-  let context: any = {}
+  let context: WorkflowContext = {
+    lastOutput:null,
+    nodeOutputs:{}
+  }
 
   while (currentNode) {
 
@@ -31,6 +38,7 @@ export const executeWorkflow = async (
     console.log("Executing:", currentNode.type)
 
     context = await runNode(currentNode, context)
+    context.nodeOutputs[currentNode.id] = context.lastOutput;
 
     onNodeUpdate?.(currentNode.id, "completed")
     let nextEdge
@@ -87,11 +95,13 @@ const runNode = async (node: NodeType, context: any) => {
         return context
       }
 
-      return {
-        ...context,
-        aiOutput: output,
-        lastOutput: output
+    return {
+      ...context,
+      lastOutput: {
+        type: "text",
+        value: output,
       }
+    }
 
     //  NOTION
     case "Notion":
@@ -163,35 +173,43 @@ const runNode = async (node: NodeType, context: any) => {
 
     // GOOGLE DRIVE
     case "Google Drive":
-      const driveRes = await fetch("/api/drive")
-      const driveData = await driveRes.json()
-      const file = driveData?.files?.[0]
-      console.log("Drive trigger")
-      
-      return {
-        ...context,
-        driveFile: file,
-        lastOutput: file?.name || "", 
-      }
 
+    const driveRes = await fetch("/api/drive")
+    const driveData = await driveRes.json()
+    const file = driveData?.files?.[0]
+
+    return {
+      ...context,
+      lastOutput: {
+        type: "file",
+        fileId: file?.id,
+        fileName: file?.name,
+        mimeType: file?.mimeType,
+      }
+    }
+
+    // Google Calendar
     case "Google Calendar":
-      const title = context.lastOutput || content
 
-      await fetch("/api/calendar", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-        }),
-      })
+    const eventData = {
+      title: context.lastOutput?.value || "New Event",
+      time: new Date().toISOString(),
+    }
 
-      return {
-        ...context,
-        lastOutput: title,
+    await fetch("/api/calendar", {
+      method: "POST",
+      body: JSON.stringify(eventData),
+    })
+
+    return {
+      ...context,
+      lastOutput: {
+        type: "event",
+        ...eventData,
       }
-    
+    }
+
+    // Trigger
     case "Trigger":
     console.log("Trigger fired")
 
@@ -207,33 +225,37 @@ const runNode = async (node: NodeType, context: any) => {
     }
 
     // 📧 EMAIL
-    case "Email":
-    const emailText = context.lastOutput || content
+    case "Email":{ 
 
-    toast.loading("Sending email...")
+    const output = context.lastOutput
 
-    try {
-      await fetch("/api/email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          to: node.data?.metadata?.to || "your@email.com",
-          subject: node.data?.metadata?.subject || "AutoMata Email",
-          text: emailText,
-        }),
-      })
-
-      toast.success("Email sent!")
-    } catch (err) {
-      toast.error("Email failed")
+    let text = ""
+  
+    if (output?.type === "text") {
+      text = output.value
     }
+
+    if (output?.type === "file") {
+      text = `File received: ${output.fileName}`
+    }
+
+    await fetch("/api/email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: node.data?.metadata?.to,
+        subject: node.data?.metadata?.subject,
+        text,
+      }),
+    })
 
     return {
       ...context,
-      lastOutput: emailText,
+      lastOutput: output,
     }
+  }
     
     default:
       console.log("Unknown:", node.type)

@@ -12,6 +12,8 @@ export async function POST(req: Request) {
       },
     })
 
+    console.log("Sending email to:", to)
+    
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to,

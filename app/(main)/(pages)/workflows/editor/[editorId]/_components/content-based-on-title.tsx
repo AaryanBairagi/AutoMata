@@ -12,6 +12,9 @@ import { nodeMapper } from '@/lib/types'
 import GoogleFileDetails from './google-file-details'
 import GoogleDriveFiles from './google-drive-files'
 import ActionButton from './action-button'
+import { NODE_CONFIG } from '@/lib/node-config'
+import { Textarea } from "@/components/ui/textarea"
+
 
 export interface Option {
   value: string
@@ -43,8 +46,7 @@ const ContentBasedOnTitle = ({
   const selectedNode = state.editor.selectedNode
 
   const title = selectedNode.data.title
-  const content = selectedNode.data.metadata?.content || ""
-
+  const config = NODE_CONFIG[title]
 
   // FETCH GOOGLE FILE
   useEffect(() => {
@@ -68,87 +70,57 @@ const ContentBasedOnTitle = ({
     reqGoogle()
   }, [])
 
-  // @ts-ignore
-  const nodeConnectionType: any = nodeConnection[nodeMapper[title]]
-  const noConnectionRequired = ["Trigger", "Condition", "AI"]
+  const nodeConnectionType: any = nodeConnection?.[nodeMapper[title]] || {}
 
-  if (noConnectionRequired.includes(title)) {
-  return (
-    <AccordionContent>
-      <Card>
-        <div className="p-4 text-sm text-zinc-400">
-          No connection required for {title}
-        </div>
-      </Card>
-    </AccordionContent>
-  )
-  }
+  let connectionKey: string | null = null
+
+  if (title === 'Slack') connectionKey = 'slackAccessToken'
+  else if (title === 'Discord') connectionKey = 'webhookURL'
+  else if (title === 'Notion') connectionKey = 'accessToken'
 
   const isConnected =
-    title === 'Google Drive'
-      ? !nodeConnection.isLoading
-      : !!nodeConnectionType[
-          title === 'Slack'
-            ? 'slackAccessToken'
-            : title === 'Discord'
-            ? 'webhookURL'
-            : title === 'Notion'
-            ? 'accessToken'
-            : ''
-        ]
-  
-  if (!isConnected && !noConnectionRequired.includes(title)) {
-  return (
-    <div className="p-4 text-sm text-red-400">
-      Please connect {title} to continue
-    </div>
-  )
-  }
+    connectionKey
+      ? !!nodeConnectionType?.[connectionKey]
+      : true
 
-  //  IMPORTANT FIX — STORE IN NODE METADATA
-  const handleChange = (value: string) => {
-  dispatch({
-  type: "UPDATE_NODE",
-  payload: {
-    elements: state.editor.elements.map((node) =>
-      node.id === selectedNode.id
-        ? {
-            ...node,
-            data: {
-              ...node.data,
-              metadata: {
-                ...node.data.metadata,
-                content: value,
-              },
-            },
-          }
-        : node
-    ),
-  },
-  })
+  if (!isConnected) {
+    return (
+      <div className="p-4 text-sm text-red-400">
+        Please connect {title} to continue
+      </div>
+    )
   }
 
   const handleChangeMeta = (key: string, value: any) => {
-  dispatch({
-    type: "UPDATE_NODE",
-    payload: {
-      elements: state.editor.elements.map((node) =>
-        node.id === selectedNode.id
-          ? {
-              ...node,
-              data: {
-                ...node.data,
-                metadata: {
-                  ...node.data.metadata,
-                  [key]: value,
+    dispatch({
+      type: "UPDATE_NODE",
+      payload: {
+        elements: state.editor.elements.map((node) =>
+          node.id === selectedNode.id
+            ? {
+                ...node,
+                data: {
+                  ...node.data,
+                  metadata: {
+                    ...node.data.metadata,
+                    [key]: value,
+                  },
                 },
-              },
-            }
-          : node
-      ),
-    },
-  })
+              }
+            : node
+        ),
+      },
+    })
   }
+
+  if (!config) {
+    return (
+      <div className="p-4 text-sm text-yellow-400">
+        No configuration available for {title}
+      </div>
+    )
+  }
+
   return (
     <AccordionContent>
       <Card>
@@ -160,42 +132,49 @@ const ContentBasedOnTitle = ({
           </CardHeader>
         )}
 
-      <div className="flex flex-col gap-3 px-6 py-3 pb-20">
-        
-    {/* CONDITION NODE UI */}
-    {title === "Condition" && (
-    <div className="flex flex-col gap-3 p-3 border rounded-lg bg-muted/30">
+        <div className="flex flex-col gap-3 px-6 py-3 pb-20">
 
-      <p className="text-sm font-medium">Condition</p>
+          {/* DYNAMIC FIELDS */}
+          {config.fields.map((field) => (
+            <div key={field.key} className="flex flex-col gap-2">
+              <label className="text-sm text-zinc-300">{field.label}</label>
 
-      <Input
-        placeholder="Value (e.g. error)"
-        value={selectedNode.data.metadata?.value || ""}
-        onChange={(e) => handleChangeMeta("value", e.target.value)}
-      />
+              {/* TEXT INPUT */}
+              {field.type === "text" && (
+                <Input
+                  placeholder={`Enter ${field.label}`}
+                  value={selectedNode.data.metadata?.[field.key] || ""}
+                  onChange={(e) => handleChangeMeta(field.key, e.target.value)}
+                />
+              )}
 
-      <select
-        className="p-2 rounded-md bg-background border"
-        value={selectedNode.data.metadata?.condition || "includes"}
-        onChange={(e) => handleChangeMeta("condition", e.target.value)}
-      >
-        <option value="includes">Includes</option>
-        <option value="equals">Equals</option>
-        <option value="startsWith">Starts With</option>
-      </select>
+              {/* SELECT INPUT */}
+              {field.type === "select" && (
+                <select
+                  className="p-2 rounded-md bg-background border"
+                  value={selectedNode.data.metadata?.[field.key] || field.options?.[0]}
+                  onChange={(e) => handleChangeMeta(field.key, e.target.value)}
+                >
+                  {field.options?.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              )}
 
-      </div>
-      )}
-
-          <p>
-            {title === 'Notion' ? 'Values to be stored' : 'Message'}
-          </p>
-
-          <Input
-            type="text"
-            value={selectedNode.data.metadata?.content || ""}
-            onChange={(e) => handleChange(e.target.value)}    
+          {field.type === "textarea" && (
+          <Textarea
+            className="p-3 rounded-md bg-background border min-h-[120px] text-sm"
+            placeholder={`Enter ${field.label}`}
+            value={selectedNode.data.metadata?.[field.key] || ""}
+            onChange={(e) => handleChangeMeta(field.key, e.target.value)}
           />
+          )}
+            </div>
+          ))}
+
+
 
           {/* GOOGLE FILE PREVIEW */}
           {JSON.stringify(file) !== '{}' && title !== 'Google Drive' && (
@@ -220,13 +199,36 @@ const ContentBasedOnTitle = ({
           {/* GOOGLE DRIVE LISTENER */}
           {title === 'Google Drive' && <GoogleDriveFiles />}
 
-          {/* ACTION BUTTONS */}
+          {/* AI */}
+          {title === "AI" && selectedNode.data.metadata?.output && (
+          <div className="mt-4 p-3 rounded-lg bg-muted border">
+            <p className="text-xs text-zinc-400 mb-2">AI Output</p>
+
+            <div className="text-sm whitespace-pre-wrap max-h-[200px] overflow-y-auto bg-black/30 p-2 rounded">
+              {selectedNode.data.metadata.output}
+            </div>
+
+            <button
+              className="mt-2 text-xs text-purple-400 hover:underline"
+              onClick={() => {
+              navigator.clipboard.writeText(selectedNode.data.metadata.output)
+              toast.success("Copied to clipboard")
+            }}
+            >
+              Copy
+            </button>
+          </div>
+          )}
+
+          
+          {/* ACTION BUTTON */}
           <ActionButton
             currentService={title}
             nodeConnection={{
               ...(nodeConnection as any)[nodeMapper[title]],
-              content,
+              ...selectedNode.data.metadata,
             }}
+            setMetadata={ (key:string,value:any) => handleChangeMeta(key,value)}
             channels={selectedSlackChannels}
           />
 
