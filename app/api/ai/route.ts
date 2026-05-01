@@ -40,8 +40,14 @@ export async function POST(req: Request) {
     const data = await res.json()
     console.log("AI RESPONSE:", data)
 
-    const text =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response"
+    const parts = data?.candidates?.[0]?.content?.parts || []
+
+    const text = parts
+      .map((p: any) => p.text || "")
+      .join("")
+      .trim()
+
+    console.log("EXTRACTED TEXT:", text)
 
     return Response.json({ result: text })
 

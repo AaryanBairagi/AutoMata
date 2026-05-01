@@ -89,7 +89,7 @@ const ClientConnections = ({ searchParams, userId }: Props) => {
   return (
     <div className="p-6 space-y-6">
 
-      <div className="flex items-center justify-between bg-gradient-to-r from-zinc-900 to-zinc-800 border border-zinc-700 rounded-xl p-5 shadow-lg">
+      <div className="flex items-center justify-between bg-gradient-to-r from-black/30 to-black/30  border border-zinc-700 rounded-xl p-5 shadow-lg">
         <div>
           <h1 className="text-3xl font-semibold text-white">Connections</h1>
           <p className="text-sm text-zinc-400">
@@ -97,7 +97,8 @@ const ClientConnections = ({ searchParams, userId }: Props) => {
           </p>
         </div>
       </div>
-      {  loading && (
+
+      { loading && (
       <div className="p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[1,2,3,4].map(i => (

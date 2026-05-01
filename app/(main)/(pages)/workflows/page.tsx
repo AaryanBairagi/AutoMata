@@ -7,7 +7,7 @@ type Props = {}
 const Page = (props: Props) => {
 return (
     <div className="p-6">
-        <div className="flex items-center justify-between bg-gradient-to-r from-zinc-900 to-zinc-800 border border-zinc-700 rounded-xl p-5 shadow-lg">
+        <div className="flex items-center justify-between bg-gradient-to-r from-black/30 to-black/30 border border-zinc-700 rounded-xl p-5 shadow-lg">
     
         <div>
         <h1 className="text-3xl font-semibold text-white">Workflows</h1>

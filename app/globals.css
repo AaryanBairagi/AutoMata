@@ -145,3 +145,7 @@
 .react-flow__controls-button:hover {
   background: rgba(255,255,255,0.1) !important;
 }
+
+[data-radix-popper-arrow] {
+  display: none !important;
+}

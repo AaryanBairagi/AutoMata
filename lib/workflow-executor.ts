@@ -17,6 +17,14 @@ type WorkflowContext = {
   nodeOutputs: Record<string, any>
 }
 
+const extractText = (output: any) => {
+  if (!output) return ""
+  if (typeof output === "string") return output
+  if (output.type === "text") return output.value
+  if (output.type === "file") return output.fileName
+  return ""
+}
+
 
 export const executeWorkflow = async (
   nodes: NodeType[],
@@ -70,13 +78,14 @@ export const executeWorkflow = async (
 
 
 const runNode = async (node: NodeType, context: any) => {
-  const content = node.data?.metadata?.content
+  const content = node.data?.metadata?.content || node.data?.metadata?.prompt
 
   switch (node.type) {
 
     //  AI NODE
     case "AI":
       if (!content) return context
+      const prev = extractText(context.lastOutput)
 
       const aiRes = await fetch("/api/ai", {
         method: "POST",
@@ -84,12 +93,12 @@ const runNode = async (node: NodeType, context: any) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          prompt: context.lastOutput ? `${content}\n\nInput: ${context.lastOutput}` : content,
+          prompt: prev ? `${content}\n\nInput: ${prev}` : content,
         }),
       })
 
       const aiData = await aiRes.json()
-      const output = aiData.result || aiData
+      const output = aiData?.result || "No AI output"
       if (!aiRes.ok) {
         console.error("AI failed")
         return context
@@ -104,72 +113,57 @@ const runNode = async (node: NodeType, context: any) => {
     }
 
     //  NOTION
-    case "Notion":
-    const notionText = context.lastOutput || content
+    case "Notion": {
+      const text = extractText(context.lastOutput)
 
-    toast.loading("Creating Notion page...")
-
-    try {
-      const res = await fetch("/api/notion", {
+      await fetch("/api/notion", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          text: notionText,
-        }),
+        body: JSON.stringify({ text }),
       })
 
-      const data = await res.json()
-
-      toast.success("Notion page created!", {
-        description: notionText,
-      })
-    } catch (err) {
-      toast.error("Notion failed.")
-   }
-
-  return {
-    ...context,
-    lastOutput: notionText,
-  }
+      return {
+        ...context,
+        lastOutput: context.lastOutput,
+      }
+    }
 
 
     //  SLACK
-    case "Slack":
-      const message = context.lastOutput || content
+    case "Slack": {
+      const message = extractText(context.lastOutput)
 
       await fetch("/api/slack", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
       })
 
-      return{
+      return {
         ...context,
-        lastOutput:message
+        lastOutput: context.lastOutput,
       }
+    }
 
     //  DISCORD
-    case "Discord":
+    case "Discord": {
+      const message = extractText(context.lastOutput)
+
       await fetch("/api/discord", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          message: context.lastOutput || content,
-        }),
+        body: JSON.stringify({ message }),
       })
 
       return {
         ...context,
-        lastOutput: context.lastOutput || content,
+        lastOutput: context.lastOutput,
       }
+    }
 
     // GOOGLE DRIVE
     case "Google Drive":
@@ -192,7 +186,7 @@ const runNode = async (node: NodeType, context: any) => {
     case "Google Calendar":
 
     const eventData = {
-      title: context.lastOutput?.value || "New Event",
+      title: extractText(context.lastOutput) || "New Event",
       time: new Date().toISOString(),
     }
 
@@ -224,20 +218,9 @@ const runNode = async (node: NodeType, context: any) => {
       lastOutput: context.lastOutput,
     }
 
-    // 📧 EMAIL
-    case "Email":{ 
-
-    const output = context.lastOutput
-
-    let text = ""
-  
-    if (output?.type === "text") {
-      text = output.value
-    }
-
-    if (output?.type === "file") {
-      text = `File received: ${output.fileName}`
-    }
+    //EMAIL
+    case "Email": {
+    const text = extractText(context.lastOutput)
 
     await fetch("/api/email", {
       method: "POST",
@@ -253,7 +236,7 @@ const runNode = async (node: NodeType, context: any) => {
 
     return {
       ...context,
-      lastOutput: output,
+      lastOutput: context.lastOutput,
     }
   }
     
@@ -268,8 +251,8 @@ const evaluateCondition = (node: NodeType, context: any) => {
   const condition = node.data?.metadata?.condition
   const value = node.data?.metadata?.value
 
-  const input = context.lastOutput || ""
-
+  const input = extractText(context.lastOutput)
+  
   switch (condition) {
     case "includes":
       return input.includes(value)

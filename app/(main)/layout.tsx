@@ -10,7 +10,7 @@ return (
         <SideBar />
         <div className="flex flex-1 flex-col">
             <InfoBar />
-            <main className="flex-1 overflow-auto px-4 py-6 border-1 border-muted-foreground/20 transition-opacity duration-300 ease-in-out">
+            <main className="flex-1 overflow-auto px-4 py-6 shadow-ld bg-gray-950 transition-opacity duration-300 ease-in-out">
             {children}
             </main>
         </div>

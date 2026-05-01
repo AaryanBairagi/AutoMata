@@ -10,10 +10,8 @@ import { CheckIcon, Github } from "lucide-react";
 
 export default function Home() {
   return (
-      <main className="flex flex-col items-center justify-center pb-10 bg-gradient-to-br from-[#01011d] via-[#0e0e12] to-[#1a1a1d] bg-opacity-70 backdrop-blur-lg "
-            // style={{ background: 'radial-gradient(125% 125% at 50% 10%, #000 35%, #223 100%)',}} 
-          >
-          <Navbar/>
+      <main className="flex flex-col items-center justify-center pb-10 bg-gradient-to-br from-[#01011d] via-[#0e0e12] to-[#1a1a1d] bg-opacity-70 backdrop-blur-lg ">
+          <Navbar />
           <section className=" min-h-screen w-full rounded-md
           !overflow-visible relative flex flex-col items-center antialiased * ">
             <div className="absolute inset-0 h-full items-center px-5 py-24 w-full"

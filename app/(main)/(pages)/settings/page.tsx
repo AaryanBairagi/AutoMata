@@ -1,47 +1,25 @@
-'use client'
+import { currentUser } from "@clerk/nextjs/server";
+import SettingsClient from "./settings-client";
+import { db } from "@/lib/db";
 
-import { useEffect, useState } from "react"
+export default async function SettingsPage() {
+  const clerkUser = await currentUser();
 
-import ProfilePicture from './_components/profile-pictures'
-import ProfileForm from '@/components/forms/profile-form'
-import { getCurrentUserData, removeProfileImage, updateUserName, uploadProfileImage } from "./_actions/settings-action"
+  if (!clerkUser) return null;
 
-export default function SettingsClient() {
-    const [user, setUser] = useState<any>(null)
+    const user = await db.user.findUnique({
+        where: {
+            clerkId: clerkUser.id,
+        },
+    });
 
-    useEffect(() => {
-        const fetchData = async () => {
-        const data = await getCurrentUserData()
-        setUser(data)
-        }
-        fetchData()
-    }, [])
-
-    if (!user) return <div className="p-6 text-white">Loading user settings...</div>
-
-    return (
-        <div className="flex flex-col gap-4">
-            <h1 className="z-[10] flex items-center justify-between border-b bg-background p-6 text-4xl">
-            <span>SETTINGS</span>
-            </h1>
-
-            <div className="flex flex-col gap-10 p-6">
-                <div>
-                <h2 className="text-2xl font-bold">User Profile</h2>
-                <p className="text-base text-white/50 hover:text-white/80 hover:drop-shadow-md">(Add or Update your information)</p>
-                </div>
-
-                <ProfilePicture
-                    onDelete={removeProfileImage}
-                    userImage={user?.profileImage || ''}
-                    onUpload={uploadProfileImage}
-                />
-
-                <ProfileForm
-                    user={user}
-                    onUpdate={updateUserName}
-                />
-            </div>
-        </div>
-    )
+  return (
+    <SettingsClient
+      user={{
+        name: user?.name || "",
+        email: user?.email || "",
+        image: user?.profileImage || null,
+      }}
+    />
+  );
 }

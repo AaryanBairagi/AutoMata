@@ -7,38 +7,38 @@ import { MenuIcon } from 'lucide-react'
 const Navbar = () => {
   return (
     <div>
-        <header className='fixed left-0 right-0 top-0 bg-black/40 backdrop-blur-lg py-4 px-4 z-[100]
+        <header className='fixed left-0 right-0 top-0 bg-black/40 backdrop-blur-lg py-4 px-4 z-[100] h-25
         flex items-center justify-between border-b border-gray-800'>
 
           {/* LeftSide Logo */}
           <aside className='flex items-center gap-2'>
-            <p className='text-3xl font-bold'>Auto</p>
+            <p className='text-3xl font-bold'>AutoMata</p>
             <Image 
                 src="/fuzzieLogo.png" 
                 alt="Image" height={15} width={15} className='shadow-md' /> 
-            <p className='text-3xl font-bold'>Mata</p>
+            {/* <p className='text-3xl font-bold'>Mata</p> */}
           </aside>
 
           {/* Central Navigation Links */}
           <nav className='absolute left-[50%] top-[50%] transform translate-x-[-50%] translate-y-[-50%] hidden md:block'>
             <ul className='flex items-center gap-4 list-none'>
-              <li>
-                <Link href='#'>Products</Link>
+              <li className='hover:text-white/70 underline underline-offset-2'>
+                <Link href='/products'>Products</Link>
+              </li >
+              <li className='hover:text-white/70 underline underline-offset-2'>
+                <Link href="/pricing">Pricing</Link>
               </li>
-              <li>
-                <Link href="#">Pricing</Link>
+              <li className='hover:text-white/70 underline underline-offset-2'>
+                <Link href="/client">Clients</Link>
               </li>
-              <li>
-                <Link href="#">Clients</Link>
+              <li className='hover:text-white/70 underline underline-offset-2'>
+                <Link href="/resources">Resources</Link>
               </li>
-              <li>
-                <Link href="#">Resources</Link>
+              <li className='hover:text-white/70 underline underline-offset-2'>
+                <Link href="/docs">Documentation</Link>
               </li>
-              <li>
-                <Link href="#">Documentation</Link>
-              </li>
-              <li>
-                <Link href="#">Enterprise</Link>
+              <li className='hover:text-white/70 underline underline-offset-2'>
+                <Link href="/enterprise">Enterprise</Link>
               </li>
             </ul>
           </nav>

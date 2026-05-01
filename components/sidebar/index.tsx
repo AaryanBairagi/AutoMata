@@ -15,9 +15,9 @@ const SideBar = () => {
     const pathname = usePathname();
 
     return (
-        <nav className='flex flex-col border items-center justify-between gap-10 py-6 px-2 w-24 min-h-screen flex-shrink-0 bg-background border-muted-foreground/20'>
+        <nav className='flex flex-col border-1 border-white/10 items-center justify-between gap-10 py-6 px-2 w-28 min-h-screen flex-shrink-0 bg-zinc-900'>
             <div className="flex flex-col items-center gap-8 overflow-y-auto hide-scrollbar">
-            <Link href="/" className="font-bold text-white text-lg tracking-tight hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition duration-300">
+            <Link href="/" className="font-bold text-white text-lg tracking-tight hover:text-white/40 transition-colors duration-300">
                 automata.
             </Link>
 
@@ -41,7 +41,8 @@ const SideBar = () => {
                     </TooltipTrigger>
                     <TooltipContent
                         side="right"
-                        className="bg-[#f3e8ff] text-[#3b0764] border border-[#e9d5ff] shadow-sm px-3 py-1 rounded-md text-sm font-medium backdrop-blur-sm">
+                        sideOffset={1}
+                        className="bg-[#f3e8ff] text-[#3b0764] border border-[#e9d5ff] shadow-sm px-3 py-1 rounded-md text-sm font-medium backdrop-blur-sm data-[side=right]:animate-in[&>span]:hidden">
                     <p>{item.name}</p>
                     </TooltipContent>
                 </Tooltip>
