@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { postMessageToSlack } from '@/app/(main)/(pages)/connections/_actions/slack-connection'
 import { onCreateNewPageInDatabase } from '@/app/(main)/(pages)/connections/_actions/notion-connection'
 
+
 type Props = {
   currentService: string
   nodeConnection: any
@@ -34,18 +35,39 @@ type Props = {
   }, [nodeConnection, channels])
 
   //  NOTION
+  // const handleNotion = useCallback(async () => {
+  //   const content = nodeConnection?.content
+  //   if (!content) return toast.error("Content empty")
+
+  //   await onCreateNewPageInDatabase(
+  //     nodeConnection.databaseId,
+  //     nodeConnection.accessToken,
+  //     content
+  //   )
+
+  //   toast.success("Notion page created")
+  // }, [nodeConnection])
+  
   const handleNotion = useCallback(async () => {
-    const content = nodeConnection?.content
-    if (!content) return toast.error("Content empty")
+  const title = nodeConnection?.title
+  const body = nodeConnection?.body
 
-    await onCreateNewPageInDatabase(
-      nodeConnection.databaseId,
-      nodeConnection.accessToken,
-      content
-    )
+  if (!title) return toast.error("Title required")
 
-    toast.success("Notion page created")
-  }, [nodeConnection])
+  const finalBody =
+    body && body.trim() !== ""
+      ? body
+      : nodeConnection?.output || ""
+
+  await onCreateNewPageInDatabase(
+    nodeConnection.databaseId,
+    nodeConnection.accessToken,
+    title,
+    finalBody
+  )
+
+  toast.success("Notion page created")
+}, [nodeConnection])
 
   //  AI 
   const handleAI = useCallback(async () => {

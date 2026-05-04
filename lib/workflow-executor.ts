@@ -1,3 +1,4 @@
+import { getNotionConnection } from "@/app/(main)/(pages)/connections/_actions/notion-connection"
 import { toast } from "sonner"
 
 type NodeType = {
@@ -113,22 +114,82 @@ const runNode = async (node: NodeType, context: any) => {
     }
 
     //  NOTION
+    // case "Notion": {
+    //   const text = extractText(context.lastOutput)
+    //   const metadata = node.data?.metadata
+
+    //   await fetch("/api/notion", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({ 
+    //       text ,
+    //       databaseId : metadata?.databaseId,
+    //       accessToken : metadata?.accessToken
+    //     }),
+    //   })
+
+    //   return {
+    //     ...context,
+    //     lastOutput: context.lastOutput,
+    //   }
+    // }
+
     case "Notion": {
-      const text = extractText(context.lastOutput)
+    
+    const metadata = node.data?.metadata
 
-      await fetch("/api/notion", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ text }),
-      })
+    const notion = await getNotionConnection();
 
-      return {
-        ...context,
-        lastOutput: context.lastOutput,
-      }
+    if (!notion) {
+      console.error("❌ Notion not connected")
+      return context
     }
+
+    const title = metadata?.title
+    const manualBody = metadata?.body
+
+    const previousOutput = extractText(context.lastOutput)
+
+    const body =
+      manualBody && manualBody.trim() !== ""
+        ? manualBody
+        : previousOutput
+
+    if (!title && !body) {
+      console.warn("No data to send to Notion")
+      return context
+    }
+
+    console.log("📤 Sending to Notion:", {
+      title,
+      body,
+      databaseId: notion.databaseId,
+      accessToken: notion.accessToken,
+    })  
+
+    console.log("🧠 FINAL TITLE:", title)
+    console.log("🧠 FINAL BODY:", body)
+
+    await fetch("/api/notion", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: title || "AutoMata",
+        body: body,
+        databaseId: notion?.databaseId,
+        accessToken: notion?.accessToken,
+      }),
+    })
+
+    return {
+      ...context,
+      lastOutput: context.lastOutput,
+    }
+  }
 
 
     //  SLACK
@@ -182,7 +243,7 @@ const runNode = async (node: NodeType, context: any) => {
       }
     }
 
-    // Google Calendar
+    // GOOGLE CALENDAR
     case "Google Calendar":
 
     const eventData = {
@@ -203,7 +264,7 @@ const runNode = async (node: NodeType, context: any) => {
       }
     }
 
-    // Trigger
+    // TRIGGER
     case "Trigger":
     console.log("Trigger fired")
 

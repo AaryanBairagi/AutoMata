@@ -106,24 +106,46 @@ const postMessageInSlackChannel = async (
     }
 }
 
-// Wrapper function to post messages to multiple Slack channels
 export const postMessageToSlack = async (
     slackAccessToken: string,
     selectedSlackChannels: Option[],
     content: string
-): Promise<{ message: string }> => {
-    if (!content) return { message: 'Content is empty' }
-    if (!selectedSlackChannels?.length) return { message: 'Channel not selected' }
+): Promise<{ success: boolean; error?: string }> => {
+
+    if (!content) return { success: false, error: "EMPTY" }
+    if (!selectedSlackChannels?.length) return { success: false, error: "NO_CHANNEL" }
 
     try {
         selectedSlackChannels
-        .map((channel) => channel?.value)
-        .forEach((channel) => {
-        postMessageInSlackChannel(slackAccessToken, channel, content)
-        })
-    } catch (error) {
-        return { message: 'Message could not be sent to Slack' }
-    }
+            .map((channel) => channel?.value)
+            .forEach((channel) => {
+                postMessageInSlackChannel(slackAccessToken, channel, content)
+            })
 
-    return { message: 'Success' }
+        return { success: true }
+    } catch {
+        return { success: false, error: "FAILED" }
+    }
 }
+
+// // Wrapper function to post messages to multiple Slack channels
+// export const postMessageToSlack = async (
+//     slackAccessToken: string,
+//     selectedSlackChannels: Option[],
+//     content: string
+// ): Promise<{ message: string }> => {
+//     if (!content) return { message: 'Content is empty' }
+//     if (!selectedSlackChannels?.length) return { message: 'Channel not selected' }
+
+//     try {
+//         selectedSlackChannels
+//         .map((channel) => channel?.value)
+//         .forEach((channel) => {
+//         postMessageInSlackChannel(slackAccessToken, channel, content)
+//         })
+//     } catch (error) {
+//         return { message: 'Message could not be sent to Slack' }
+//     }
+
+//     return { message: 'Success' }
+// }

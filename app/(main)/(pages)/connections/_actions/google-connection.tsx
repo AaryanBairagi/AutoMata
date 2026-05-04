@@ -14,7 +14,7 @@ export const getFileMetaData = async () => {
   const { userId } = await auth()
 
   if (!userId) {
-    return { message: 'User not found' }
+    return { success: false }
   }
 
   const clerkResponse = await clerk.users.getUserOauthAccessToken(

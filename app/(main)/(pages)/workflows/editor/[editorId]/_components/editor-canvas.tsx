@@ -277,22 +277,22 @@ const EditorCanvas = () => {
         >
           <Controls position='top-right' />
           <MiniMap
-          style={{
+            style={{
             backgroundColor: "#0E0E11",
             border: "1px solid rgba(255,255,255,0.1)",
-          }}
-          nodeColor={() => "#666"}
-          maskColor="rgba(0,0,0,0.6)"
-          position='top-left'
+            }}
+            nodeColor={() => "#666"}
+            maskColor="rgba(0,0,0,0.6)"
+            position='top-left'
           />
           
           <Background variant={BackgroundVariant.Dots} />
         </ReactFlow>
       </ResizablePanel>
 
-      <ResizableHandle className="bg-white/10 hover:bg-white/20 transition-colors w-[2px]" />
+      <ResizableHandle className="w-[2px] bg-white/10 hover:bg-white/20 transition-colors" />
 
-      <ResizablePanel defaultSize={30} className='backdrop-blur-lg border-1 border-white/10 bg-[#0E0E11]'>
+      <ResizablePanel defaultSize={30} className='backdrop-blur-lg bg-[#0E0E11]'>
         <FlowInstance>
           <EditorCanvasSidebar nodes={state.editor.elements} />
         </FlowInstance>

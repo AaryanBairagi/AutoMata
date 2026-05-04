@@ -33,12 +33,13 @@ export const NODE_CONFIG = {
 
   Notion: {
     fields: [
-      { key: "content", label: "Content", type: "text" },
-      { key: "databaseId", label: "Database ID", type: "text" },
+      { key: "title", label: "Page Title", type: "text" },
+      { key: "body" , label:"Page Content" , type: "textarea"},
+      // { key: "databaseId", label: "Database ID", type: "text" },
     ],
   },
 
-  // 🔥 GOOGLE DRIVE
+  // GOOGLE DRIVE
   "Google Drive": {
     fields: [
       {
@@ -68,7 +69,7 @@ export const NODE_CONFIG = {
     ],
   },
 
-  // 🔥 GOOGLE CALENDAR
+  //GOOGLE CALENDAR
   "Google Calendar": {
     fields: [
       {

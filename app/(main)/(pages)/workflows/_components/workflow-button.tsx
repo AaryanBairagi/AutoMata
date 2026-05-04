@@ -6,6 +6,13 @@ import { useModal } from "@/providers/modal-provider";
 import CustomModal from "@/components/global/custom-modal";
 import WorkFlowForm from "@/components/forms/workflow-form";
 import { useBilling } from "@/providers/billing-provider";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 type Props = {}
 
 const WorkflowButton = (props: Props) => {
@@ -22,21 +29,28 @@ const WorkflowButton = (props: Props) => {
         )
     }
 
-return (
-    <Button 
-        className="ml-2 text-black bg-white border-1 border-gray-800 hover:text-white hover:border-white" 
-        size={'icon'} 
-        // onClick={handleClick}
-        {...(credits !=='0' 
-            ? {
-                onClick:handleClick
-            } : {
-                disabled:true
-            })}
+  return (
+  <TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button 
+          className="ml-2 text-black bg-white border border-gray-800 hover:text-black/80 hover:bg-white/60 hover:border-black/80"
+          size="icon"
+          {...(credits !== '0' 
+            ? { onClick: handleClick }
+            : { disabled: true })}
         >
-        <Plus />
-    </Button>
+          <Plus />
+        </Button>
+      </TooltipTrigger>
+
+      <TooltipContent>
+        <p>Create new Workflow</p>
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
 )
+
 }
 
 export default WorkflowButton

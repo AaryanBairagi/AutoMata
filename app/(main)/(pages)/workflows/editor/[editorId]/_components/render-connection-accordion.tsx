@@ -12,6 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { CheckIcon, ChevronsUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { useUser } from "@clerk/nextjs"
 
     const frameworks = [
         {
@@ -59,12 +60,13 @@ const isConnected =
     accessTokenKey &&
     connectionData[accessTokenKey!])
 
+const { user } = useUser()
 
 return (
     <AccordionContent key={title}>
         {state.editor.selectedNode.data.title === title && (
             <>
-                <ConnectionCard title={title} icon={image} description={description} type={title} connected={{ [title]: isConnected }} />
+                <ConnectionCard userId={user?.id || ''} title={title} icon={image} description={description} type={title} connected={{ [title]: isConnected }} />
                     {slackSpecial && isConnected && (
                         <div className="p-6">
                             {slackChannels?.length ? (

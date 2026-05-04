@@ -17,40 +17,90 @@ const ClientConnections = ({ searchParams, userId }: Props) => {
   const [connections, setConnections] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // useEffect(() => {
+  //   const setupConnections = async () => {
+  //     setLoading(true);
+
+  //     const {
+  //       webhook_id = "",
+  //       webhook_name = "",
+  //       webhook_url = "",
+  //       guild_id = "",
+  //       guild_name = "",
+  //       channel_id = "",
+  //       access_token = "",
+  //       workspace_name = "",
+  //       workspace_icon = "",
+  //       workspace_id = "",
+  //       database_id = "",
+  //       app_id = "",
+  //       authed_user_id = "",
+  //       authed_user_token = "",
+  //       slack_access_token = "",
+  //       bot_user_id = "",
+  //       team_id = "",
+  //       team_name = "",
+  //     } = searchParams;
+
+  //     await onDiscordConnect(
+  //       channel_id,
+  //       webhook_id,
+  //       webhook_name,
+  //       webhook_url,
+  //       userId,
+  //       guild_name,
+  //       guild_id
+  //     );
+
+  //     await onNotionConnect(
+  //       access_token,
+  //       workspace_id,
+  //       workspace_icon,
+  //       workspace_name,
+  //       database_id,
+  //       userId
+  //     );
+
+  //     await onSlackConnect(
+  //       app_id,
+  //       authed_user_id,
+  //       authed_user_token,
+  //       slack_access_token,
+  //       bot_user_id,
+  //       team_id,
+  //       team_name,
+  //       userId
+  //     );
+
+  //     const user_info = await getUserData(userId);
+
+  //     const connectionMap: any = {};
+  //     user_info?.connections.forEach((c) => {
+  //       connectionMap[c.type] = true;
+  //     });
+
+  //     setConnections(connectionMap);
+  //     setLoading(false);
+  //   };
+
+  //   setupConnections();
+  // }, [searchParams, userId]);
+
   useEffect(() => {
-    const setupConnections = async () => {
-      setLoading(true);
+  const setupConnections = async () => {
+    setLoading(true);
 
-      const {
-        webhook_id = "",
-        webhook_name = "",
-        webhook_url = "",
-        guild_id = "",
-        guild_name = "",
-        channel_id = "",
-        access_token = "",
-        workspace_name = "",
-        workspace_icon = "",
-        workspace_id = "",
-        database_id = "",
-        app_id = "",
-        authed_user_id = "",
-        authed_user_token = "",
-        slack_access_token = "",
-        bot_user_id = "",
-        team_id = "",
-        team_name = "",
-      } = searchParams;
+    const {
+      access_token,
+      workspace_id,
+      workspace_name,
+      workspace_icon,
+      database_id,
+    } = searchParams;
 
-      await onDiscordConnect(
-        channel_id,
-        webhook_id,
-        webhook_name,
-        webhook_url,
-        userId,
-        guild_name,
-        guild_id
-      );
+    // ADD THIS GUARD
+    if (access_token && workspace_id) {
+      console.log(" Saving Notion connection");
 
       await onNotionConnect(
         access_token,
@@ -60,31 +110,23 @@ const ClientConnections = ({ searchParams, userId }: Props) => {
         database_id,
         userId
       );
+    }
 
-      await onSlackConnect(
-        app_id,
-        authed_user_id,
-        authed_user_token,
-        slack_access_token,
-        bot_user_id,
-        team_id,
-        team_name,
-        userId
-      );
+    const user_info = await getUserData(userId);
+    console.log("USER INFO:", user_info);
 
-      const user_info = await getUserData(userId);
+    const connectionMap: any = {};
+    user_info?.connections.forEach((c) => {
+      connectionMap[c.type] = true;
+    });
 
-      const connectionMap: any = {};
-      user_info?.connections.forEach((c) => {
-        connectionMap[c.type] = true;
-      });
+    setConnections(connectionMap);
+    setLoading(false);
+  };
 
-      setConnections(connectionMap);
-      setLoading(false);
-    };
+  setupConnections();
+}, [searchParams, userId]);
 
-    setupConnections();
-  }, [searchParams, userId]);
 
   return (
     <div className="p-6 space-y-6">
